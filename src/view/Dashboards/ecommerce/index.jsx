@@ -1,9 +1,12 @@
-import React from 'react'
+import { React, Fragment } from "react";
+
+import Header from '../../../Layouts/tabHeader'
 
 export default function Ecommerce() {
-    return (
-        <div>
-            <h3>สวัสดี, Fariw 👋</h3>
-        </div>
-    )
+  return (
+    <Fragment>
+      <Header />
+      <h3>สวัสดี, Fariw 👋</h3>
+    </Fragment>
+  );
 }
