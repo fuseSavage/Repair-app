@@ -1,30 +1,51 @@
 // import liff from "@line/liff";
-import { React, Fragment } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
-import { Form, Input, Button, Checkbox, Row, Col, Divider } from "antd";
+import { Form, Input, Button, Row, Col, Divider } from "antd";
 
-import { sendLogin } from '../../services'
+import BIRDS from "vanta/dist/vanta.birds.min";
+
+import { sendLogin } from "../../services";
 
 function App() {
-  console.log(process.env.REACT_APP_SECRET_API);
+  const [vantaEffect, setVantaEffect] = useState(0);
+  const myRef = useRef(null);
+  useEffect(() => {
+    if (!vantaEffect) {
+      setVantaEffect(
+        BIRDS({
+          el: myRef.current,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          scale: 1.0,
+          scaleMobile: 1.0,
+          backgroundColor: 0xffffff,
+        })
+      );
+    }
+    return () => {
+      if (vantaEffect) vantaEffect.destroy();
+    };
+  }, [vantaEffect]);
 
   const onFinish = (values) => {
     const data = {
-      garageID : values.garageID,
-      password : values.password
-    }
-    console.log(data)
+      garageID: values.garageID,
+      password: values.password,
+    };
+    console.log(data);
 
-    sendLogin(data).then((response) => console.log('response', response))
+    sendLogin(data).then((response) => console.log("response", response));
   };
 
-
-
   return (
-    <Fragment>
-      <Row>
+    <div className="h-100" ref={myRef}>
+      <Row >
         <Col
-          span={6}
+          span={4}
           xs={{ order: 1 }}
           sm={{ order: 2 }}
           md={{ order: 3 }}
@@ -83,24 +104,13 @@ function App() {
             </Form.Item>
 
             <Form.Item
-              name="remember"
-              valuePropName="checked"
-              wrapperCol={{
-                offset: 8,
-                span: 16,
-              }}
-            >
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-
-            <Form.Item
               wrapperCol={{
                 offset: 8,
                 span: 16,
               }}
             >
               <Button type="primary" htmlType="submit">
-                Submit
+                ยืนยัน
               </Button>
             </Form.Item>
           </Form>
@@ -113,7 +123,7 @@ function App() {
           lg={{ order: 4 }}
         ></Col>
       </Row>
-    </Fragment>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 // import axios from "axios";
 import {
   Form,
@@ -19,7 +19,9 @@ import {
   Marker,
 } from "react-google-maps";
 
-import { sendToken } from '../../services'
+import BIRDS from "vanta/dist/vanta.birds.min";
+
+import { sendToken } from "../../services";
 
 let newLatLng = [{ lat: 15.118524429823255, lng: 104.9075726928711 }];
 
@@ -76,13 +78,36 @@ const tailFormItemLayout = {
 
 //Main Function
 export default function RegistrationForm() {
+  const [vantaEffect, setVantaEffect] = useState(0);
+  const myRef = useRef(null);
+  useEffect(() => {
+    if (!vantaEffect) {
+      setVantaEffect(
+        BIRDS({
+          el: myRef.current,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          scale: 1.0,
+          scaleMobile: 1.0,
+          backgroundColor: 0xffffff,
+          quantity: 5.00,
+        })
+      );
+    }
+    return () => {
+      if (vantaEffect) vantaEffect.destroy();
+    };
+  }, [vantaEffect]);
+
   const [ontime, setOnTime] = useState();
   const [offtime, setOffTime] = useState();
 
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
-   
     const data = {
       party: "garage",
       garageID: values.userID,
@@ -102,11 +127,10 @@ export default function RegistrationForm() {
       address_map: [newLatLng[0].lat, newLatLng[0].lng],
       on_time: ontime,
       off_time: offtime,
-      tel: values.phone
-    }
+      tel: values.phone,
+    };
 
-    sendToken(data).then((response) => console.log('response', response))
-
+    sendToken(data).then((response) => console.log("response", response));
   };
 
   const handleOnTime = (time, timeString) => {
@@ -118,218 +142,284 @@ export default function RegistrationForm() {
   };
 
   return (
-    <Row>
-      <Col
-        span={6}
-        xs={{ order: 1 }}
-        sm={{ order: 2 }}
-        md={{ order: 3 }}
-        lg={{ order: 4 }}
-      ></Col>
-      <Col
-        // style={{ textAlign: "center" }}
-        span={12}
-        xs={{ order: 1 }}
-        sm={{ order: 2 }}
-        md={{ order: 3 }}
-        lg={{ order: 4 }}
-      >
-        <div className="title"></div>
-        <Divider orientation="left">
-          <b>รายละเอียดของร้าน</b>
-        </Divider>
-        <Form
-          {...formItemLayout}
-          form={form}
-          name="register"
-          onFinish={onFinish}
-          scrollToFirstError
+    <div className="h-auto" ref={myRef}>
+      <Row >
+        <Col
+          span={4}
+          xs={{ order: 1 }}
+          sm={{ order: 2 }}
+          md={{ order: 3 }}
+          lg={{ order: 4 }}
+        ></Col>
+        <Col
+          // style={{ textAlign: "center" }}
+          span={12}
+          xs={{ order: 1 }}
+          sm={{ order: 2 }}
+          md={{ order: 3 }}
+          lg={{ order: 4 }}
         >
-          {/* User ID */}
-          <Form.Item
-            name="userID"
-            label="User ID"
-            tooltip="User ID เพื่อใช้ในการเข้าระบบในครั้งต่อไป"
-            rules={[
-              {
-                required: true,
-                message: "กรุณาระบุ userID ของคุณ",
-              },
-            ]}
+          <div className="title">ลงทะเบียนร้านซ่อม</div>
+          <Divider orientation="left">
+            <b>รายละเอียดของร้าน</b>
+          </Divider>
+          <Form
+            {...formItemLayout}
+            form={form}
+            name="register"
+            onFinish={onFinish}
+            scrollToFirstError
           >
-            <Input />
-          </Form.Item>
-
-          {/* Password  รหัสผ่าน*/}
-          <Form.Item
-            name="password"
-            label="รหัสผ่าน"
-            rules={[
-              {
-                required: true,
-                message: "กรุณาใส่รหัสผ่านของคุณ!",
-              },
-            ]}
-            hasFeedback
-          >
-            <Input.Password />
-          </Form.Item>
-          {/* confirm Password  ยืนยันรหัสผ่าน */}
-          <Form.Item
-            name="confirm"
-            label="ยืนยันรหัสผ่าน"
-            dependencies={["password"]}
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: "กรุณายืนยันรหัสผ่านของคุณ!",
-              },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve();
-                  }
-
-                  return Promise.reject(
-                    new Error("รหัสผ่านทั้งสองที่คุณป้อนไม่ตรงกัน!")
-                  );
+            {/* User ID */}
+            <Form.Item
+              name="userID"
+              label="User ID"
+              tooltip="User ID เพื่อใช้ในการเข้าระบบในครั้งต่อไป"
+              rules={[
+                {
+                  required: true,
+                  message: "กรุณาระบุ userID ของคุณ",
                 },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          {/* User Name  ชื่อ-นามสกุล */}
-          <Form.Item
-            name="username"
-            label="ชื่อ-นามสกุล"
-            tooltip="ชื่อเจ้าของร้าน หรือผู้ที่ได้รับผิดชอบ"
-            rules={[
-              {
-                required: true,
-                message: "กรุณาระบุ ชื่อ-นามสกุล ของคุณ!",
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          {/* Garage Name ชื่อร้านซ่อม */}
-          <Form.Item
-            name="garagename"
-            label="ชื่อร้านซ่อม"
-            tooltip="ชื่อร้านซ่อม หรืออู่ซ่อมรถ"
-            rules={[
-              {
-                required: true,
-                message: "กรุณาระบุ ชื่อร้านซ่อม หรืออู่ซ่อมรถ ของคุณ!",
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          {/* Gmail */}
-          <Form.Item
-            name="email"
-            label="E-mail"
-            rules={[
-              {
-                type: "email",
-                message: "ข้อมูลที่ป้อนไม่ถูกต้อง ตามรูปแบบ E-mail!",
-              },
-              {
-                required: true,
-                message: "กรุณาใส่อีเมลของคุณ!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          {/* Garage type ประเภทของร้านซ่อม */}
-          <Form.Item
-            name="garagetype"
-            label="ประเภทของร้านซ่อม"
-            tooltip="เลือกประเภทของร้านซ่อม (สามารถเลือกได้มากกว่าหนึ่งประเภท)"
-            rules={[
-              {
-                required: true,
-                message: "กรุณาเลือกประเภทของร้านซ่อมของคุณ!",
-              },
-            ]}
-          >
-            <Select
-              mode="multiple"
-              allowClear
-              style={{ width: "100%" }}
-              placeholder="Please select"
+              ]}
             >
-              <Option value="ศูนย์บริการรถยนต์">ศูนย์บริการรถยนต์</Option>
-              <Option value="อู่ซ่อมรถยนต์">อู่ซ่อมรถยนต์</Option>
-              <Option value="ศูนย์บริการรถจักรยานยนต์">
-                ศูนย์บริการรถจักรยานยนต์
-              </Option>
-              <Option value="อู่ซ่อมรถจักรยานยนต์">อู่ซ่อมรถจักรยานยนต์</Option>
-              <Option value="ร้านบริการซ่อมอุปกรณ์การเกษตร">
-                ร้านบริการซ่อมอุปกรณ์การเกษตร
-              </Option>
-            </Select>
-          </Form.Item>
+              <Input />
+            </Form.Item>
 
-          {/* หมายเลขโทรศัพท์ */}
-          <Form.Item
-            style={{ marginTop: "20px" }}
-            name="phone"
-            label="หมายเลขโทรศัพท์"
-            rules={[
-              {
-                required: true,
-                message: "กรุณาใส่หมายเลขโทรศัพท์ของคุณ!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+            {/* Password  รหัสผ่าน*/}
+            <Form.Item
+              name="password"
+              label="รหัสผ่าน"
+              rules={[
+                {
+                  required: true,
+                  message: "กรุณาใส่รหัสผ่านของคุณ!",
+                },
+              ]}
+              hasFeedback
+            >
+              <Input.Password />
+            </Form.Item>
+            {/* confirm Password  ยืนยันรหัสผ่าน */}
+            <Form.Item
+              name="confirm"
+              label="ยืนยันรหัสผ่าน"
+              dependencies={["password"]}
+              hasFeedback
+              rules={[
+                {
+                  required: true,
+                  message: "กรุณายืนยันรหัสผ่านของคุณ!",
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
 
-          {/* เวลาที่ร้านเปิด */}
-          <Form.Item
-            style={{ marginTop: "20px" }}
-            label="เวลาที่ร้านเปิด"
-            rules={[
-              {
-                // required: true,
-                // message: "กรุณาระบุเวลาเปิด-ปิดร้านของคุณ",
-              },
-            ]}
-          >
+                    return Promise.reject(
+                      new Error("รหัสผ่านทั้งสองที่คุณป้อนไม่ตรงกัน!")
+                    );
+                  },
+                }),
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+
+            {/* User Name  ชื่อ-นามสกุล */}
+            <Form.Item
+              name="username"
+              label="ชื่อ-นามสกุล"
+              tooltip="ชื่อเจ้าของร้าน หรือผู้ที่ได้รับผิดชอบ"
+              rules={[
+                {
+                  required: true,
+                  message: "กรุณาระบุ ชื่อ-นามสกุล ของคุณ!",
+                  whitespace: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            {/* Garage Name ชื่อร้านซ่อม */}
+            <Form.Item
+              name="garagename"
+              label="ชื่อร้านซ่อม"
+              tooltip="ชื่อร้านซ่อม หรืออู่ซ่อมรถ"
+              rules={[
+                {
+                  required: true,
+                  message: "กรุณาระบุ ชื่อร้านซ่อม หรืออู่ซ่อมรถ ของคุณ!",
+                  whitespace: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            {/* Gmail */}
+            <Form.Item
+              name="email"
+              label="E-mail"
+              rules={[
+                {
+                  type: "email",
+                  message: "ข้อมูลที่ป้อนไม่ถูกต้อง ตามรูปแบบ E-mail!",
+                },
+                {
+                  required: true,
+                  message: "กรุณาใส่อีเมลของคุณ!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            {/* Garage type ประเภทของร้านซ่อม */}
+            <Form.Item
+              name="garagetype"
+              label="ประเภทของร้านซ่อม"
+              tooltip="เลือกประเภทของร้านซ่อม (สามารถเลือกได้มากกว่าหนึ่งประเภท)"
+              rules={[
+                {
+                  required: true,
+                  message: "กรุณาเลือกประเภทของร้านซ่อมของคุณ!",
+                },
+              ]}
+            >
+              <Select
+                mode="multiple"
+                allowClear
+                style={{ width: "100%" }}
+                placeholder="Please select"
+              >
+                <Option value="ศูนย์บริการรถยนต์">ศูนย์บริการรถยนต์</Option>
+                <Option value="อู่ซ่อมรถยนต์">อู่ซ่อมรถยนต์</Option>
+                <Option value="ศูนย์บริการรถจักรยานยนต์">
+                  ศูนย์บริการรถจักรยานยนต์
+                </Option>
+                <Option value="อู่ซ่อมรถจักรยานยนต์">
+                  อู่ซ่อมรถจักรยานยนต์
+                </Option>
+                <Option value="ร้านบริการซ่อมอุปกรณ์การเกษตร">
+                  ร้านบริการซ่อมอุปกรณ์การเกษตร
+                </Option>
+              </Select>
+            </Form.Item>
+
+            {/* หมายเลขโทรศัพท์ */}
+            <Form.Item
+              style={{ marginTop: "20px" }}
+              name="phone"
+              label="หมายเลขโทรศัพท์"
+              rules={[
+                {
+                  required: true,
+                  message: "กรุณาใส่หมายเลขโทรศัพท์ของคุณ!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            {/* เวลาที่ร้านเปิด */}
+            <Form.Item
+              style={{ marginTop: "20px" }}
+              label="เวลาที่ร้านเปิด"
+              rules={[
+                {
+                  // required: true,
+                  // message: "กรุณาระบุเวลาเปิด-ปิดร้านของคุณ",
+                },
+              ]}
+            >
+              <Row>
+                <TimePicker
+                  defaultOpenValue={moment("00:00:00", "HH:mm:ss")}
+                  onChange={handleOnTime}
+                />
+                <div className="div-time">ถึงเวลา</div>
+
+                <TimePicker
+                  defaultOpenValue={moment("00:00:00", "HH:mm:ss")}
+                  onChange={handleOffTime}
+                />
+              </Row>
+            </Form.Item>
+
+            <Divider orientation="left">
+              <b>ที่อยู่ของร้าน</b>
+            </Divider>
+
             <Row>
-              <TimePicker
-                defaultOpenValue={moment("00:00:00", "HH:mm:ss")}
-                onChange={handleOnTime}
-              />
-              <div className="div-time">ถึงเวลา</div>
+              {/* Addess Number บ้านเลขที่*/}
+              <Form.Item
+                name="addressnumber"
+                label="ตั้งอยู่เลขที่"
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณาระที่อยู่ให้ครบ!",
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
-              <TimePicker
-                defaultOpenValue={moment("00:00:00", "HH:mm:ss")}
-                onChange={handleOffTime}
-              />
+              {/* หมู่ที่ */}
+              <Form.Item
+                name="moo"
+                label="หมู่ที่"
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณาระที่อยู่ให้ครบ!",
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
             </Row>
-          </Form.Item>
 
-          <Divider orientation="left">
-            <b>ที่อยู่ของร้าน</b>
-          </Divider>
+            <Row>
+              {/* ตรอก/ซอย */}
+              <Form.Item
+                name="alley"
+                label="ตรอก/ซอย"
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณาระที่อยู่ให้ครบ!",
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
-          <Row>
-            {/* Addess Number บ้านเลขที่*/}
+              {/* ถนน */}
+              <Form.Item
+                name="road"
+                label="ถนน"
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณาระที่อยู่ให้ครบ!",
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Row>
+
+            {/* ตำบล/แขวง */}
             <Form.Item
-              name="addressnumber"
-              label="ตั้งอยู่เลขที่"
+              name="subdistrict"
+              label="ตำบล/แขวง"
               rules={[
                 {
                   required: true,
@@ -341,27 +431,10 @@ export default function RegistrationForm() {
               <Input />
             </Form.Item>
 
-            {/* หมู่ที่ */}
+            {/* อำเภอ/เขต */}
             <Form.Item
-              name="moo"
-              label="หมู่ที่"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาระที่อยู่ให้ครบ!",
-                  whitespace: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Row>
-
-          <Row>
-            {/* ตรอก/ซอย */}
-            <Form.Item
-              name="alley"
-              label="ตรอก/ซอย"
+              name="district"
+              label="อำเภอ/เขต"
               rules={[
                 {
                   required: true,
@@ -373,10 +446,10 @@ export default function RegistrationForm() {
               <Input />
             </Form.Item>
 
-            {/* ถนน */}
+            {/* จังหวัด */}
             <Form.Item
-              name="road"
-              label="ถนน"
+              name="province"
+              label="จังหวัด"
               rules={[
                 {
                   required: true,
@@ -387,96 +460,55 @@ export default function RegistrationForm() {
             >
               <Input />
             </Form.Item>
-          </Row>
 
-          {/* ตำบล/แขวง */}
-          <Form.Item
-            name="subdistrict"
-            label="ตำบล/แขวง"
-            rules={[
-              {
-                required: true,
-                message: "กรุณาระที่อยู่ให้ครบ!",
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+            {/* รหัสไปรษณีย์ */}
+            <Form.Item
+              name="poscode"
+              label="รหัสไปรษณีย์"
+              rules={[
+                {
+                  required: true,
+                  message: "กรุณาระที่อยู่ให้ครบ!",
+                  whitespace: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
 
-          {/* อำเภอ/เขต */}
-          <Form.Item
-            name="district"
-            label="อำเภอ/เขต"
-            rules={[
-              {
-                required: true,
-                message: "กรุณาระที่อยู่ให้ครบ!",
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+            <Divider orientation="left">
+              <b>กรุณาปักหมุดที่อยู่ของร้าน</b>
+            </Divider>
 
-          {/* จังหวัด */}
-          <Form.Item
-            name="province"
-            label="จังหวัด"
-            rules={[
-              {
-                required: true,
-                message: "กรุณาระที่อยู่ให้ครบ!",
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+            {/* ปักหมุดแผนที่ */}
+            <Col md={24} span={24}>
+              <MapWithAMarker
+                googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKBdBAnDzrOkcfHq9InQFfYM7Inig-Zeg&v=3.exp&libraries=geometry,drawing,places"
+                loadingElement={<div style={{ height: "100%" }} />}
+                containerElement={<div style={{ height: "300px" }} />}
+                mapElement={<div style={{ height: "100%" }} />}
+              />
+            </Col>
 
-          {/* รหัสไปรษณีย์ */}
-          <Form.Item
-            name="poscode"
-            label="รหัสไปรษณีย์"
-            rules={[
-              {
-                required: true,
-                message: "กรุณาระที่อยู่ให้ครบ!",
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Divider orientation="left">
-            <b>กรุณาปักหมุดที่อยู่ของร้าน</b>
-          </Divider>
-
-          {/* ปักหมุดแผนที่ */}
-          <Col md={24} span={24}>
-            <MapWithAMarker
-              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKBdBAnDzrOkcfHq9InQFfYM7Inig-Zeg&v=3.exp&libraries=geometry,drawing,places"
-              loadingElement={<div style={{ height: "100%" }} />}
-              containerElement={<div style={{ height: "300px" }} />}
-              mapElement={<div style={{ height: "100%" }} />}
-            />
-          </Col>
-
-          <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit" style={{marginTop: "30px"}}>
-              ยืนยันการสมัคร
-            </Button>
-          </Form.Item>
-        </Form>
-      </Col>
-      <Col
-        span={6}
-        xs={{ order: 1 }}
-        sm={{ order: 2 }}
-        md={{ order: 3 }}
-        lg={{ order: 4 }}
-      ></Col>
-    </Row>
+            <Form.Item {...tailFormItemLayout}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ marginTop: "30px" }}
+              >
+                ยืนยันการสมัคร
+              </Button>
+            </Form.Item>
+          </Form>
+        </Col>
+        <Col
+          span={6}
+          xs={{ order: 1 }}
+          sm={{ order: 2 }}
+          md={{ order: 3 }}
+          lg={{ order: 4 }}
+        ></Col>
+      </Row>
+    </div>
   );
 }

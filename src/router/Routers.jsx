@@ -1,70 +1,82 @@
+// Router
 import { BrowserRouter as AppRouter, Route, Switch } from "react-router-dom";
 
 // import Ecommerce from "../view/Dashboards/ecommerce";
 
-import HeaderTap from "../Layouts/tabHeader";
-import MenuList from "../Layouts/menulist";
+// import HeaderTap from "../Layouts/tabHeader";
+// import MenuList from "../Layouts/menulist";
 
 //import
-import Login from "../view/Login";
-// import Home from "../view/Homes/index";
-import Home from "../view/Homes/index";
-import RegistionPage from "../view/Registion";
+// import Login from "../view/Login";
+// import RegistionPage from "../view/Registion";
 
-import { Layout } from "antd";
+// Routes
+import { Routes } from "./routes";
 
-const { Content, Footer } = Layout;
+// Layouts
+import VerticalLayout from "../Layouts/VerticalLayout";
+import FullLayout from "../Layouts/FullLayout";
+
+// Components
+
+import ProtectedRoute from "../ProtectdRoute";
+
+// import { Layout } from "antd";
+
+// const { Content, Footer } = Layout;
 
 export default function Routers() {
+  // Default Layout
+  const DefaultLayout = null; // FullLayout or VerticalLayout
+
+  // All of the available layouts
+  const Layouts = { VerticalLayout, FullLayout };
+
+  // Return Filtered Array of Routes & Paths
+  const LayoutRoutesAndPaths = (layout) => {
+    const LayoutRoutes = [];
+    const LayoutPaths = [];
+    if (Routes) {
+      // Checks if Route layout or Default layout matches current layout
+      Routes.filter(
+        (route) =>
+          (route.layout === layout || DefaultLayout === layout) &&
+          (LayoutRoutes.push(route), LayoutPaths.push(route.path))
+      );
+    }
+
+    return { LayoutRoutes, LayoutPaths };
+  };
+
+  // Return Route to Render
+  const ResolveRoutes = () => {
+    return Object.keys(Layouts).map((layout, index) => {
+      const { LayoutRoutes, LayoutPaths } = LayoutRoutesAndPaths(layout);
+      const LayoutTag = Layouts[layout];
+      return (
+        <Route path={LayoutPaths} key={index}>
+          <LayoutTag>
+            <Switch>
+              {LayoutRoutes.map((route) => {
+                return (
+                  <ProtectedRoute
+                    key={route.path}
+                    path={route.path}
+                    exact
+                    component={route.component}
+                  />
+                );
+              })}
+            </Switch>
+          </LayoutTag>
+        </Route>
+      );
+    });
+  };
+
   return (
-    <>
-      <HeaderTap
-        className="site-layout-background"
-        style={{ padding: 0, position: "fixed", zIndex: 1, width: "100%" }}
-      />
-      <Layout style={{ minHeight: "100vh", paddingTop: "2vh" }}>
-        <MenuList />
-
-        <Layout className="site-layout">
-          <Content style={{ margin: "0 16px" }}>
-            <div
-              className="site-layout-background"
-              style={{ padding: 24, mixHeight: 360 }}
-            >
-              <AppRouter>
-                <Switch>
-                  <Route
-                    exact
-                    path={"/login"}
-                    render={() => {
-                      return <Login />;
-                    }}
-                  />
-
-                  <Route
-                    exact
-                    path={"/registion"}
-                    render={() => {
-                      return <RegistionPage />;
-                    }}
-                  />
-                  <Route
-                    exact
-                    path={"/"}
-                    render={() => {
-                      return <Home />;
-                    }}
-                  />
-                </Switch>
-              </AppRouter>
-            </div>
-          </Content>
-          <Footer style={{ textAlign: "center" }}>
-            Ant Design ©2018 Created by Ant UED
-          </Footer>
-        </Layout>
-      </Layout>
-  
-    </>
+    <AppRouter>
+      <Switch>{ResolveRoutes()}</Switch>
+    </AppRouter>
   );
 }
