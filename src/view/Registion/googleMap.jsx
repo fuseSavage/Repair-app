@@ -21,6 +21,7 @@ import {
           draggable={true}
           position={newLatLng[0]}
           onDragEnd={(e) => onMarkerDragEnd(e)}
+          
         />
       </GoogleMap>
     ))
@@ -28,7 +29,7 @@ import {
 
   export default function App() {
       return (
-        <Col md={24} span={24}>
+        <Col  span={24}>
         <MapWithAMarker
           googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYQsoMGSxKVOe6vilIiEedgPhRDjcPbC8&libraries=geometry,drawing,places"
           loadingElement={<div style={{ height: '100%' }} />}

@@ -40,7 +40,7 @@ export default function App() {
             <Link to={"/"}>เริ่มต้นใช้งาน</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<DesktopOutlined />}>
-            <Link to={"/registion"}>ลงทะเบียนร้านซ่อม</Link>
+            <Link to={"/register"}>ลงทะเบียนร้านซ่อม</Link>
           </Menu.Item>
           <SubMenu key="sub1" icon={<TeamOutlined />} title="บริการลูกค้า">
             <Menu.Item key="8" icon={<SearchOutlined />}>

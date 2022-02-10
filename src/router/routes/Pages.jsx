@@ -12,14 +12,14 @@ const PagesRoutes = [
 
   // Landing Register Page
   {
-    path: "/registion",
+    path: "/register",
     component: lazy(() => import("../../view/Pages/Register")),
     layout: "VerticalLayout",
   },
 
   // Register 
   {
-    path: "/register",
+    path: "/register/registion",
     component: lazy(() => import("../../view/Registion/Registion")),
     layout: "VerticalLayout",
   },

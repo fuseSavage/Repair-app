@@ -32,11 +32,13 @@ function App() {
         className="Col-footer"
       >
         <div className="box2">
+          <Link to={"/register"}>
           <Row className="box2-button">
             <Col span={24} className="bt2-register">
-            <Link to={"/register"}>เริ่มใช้งานทันที</Link>
+            ลงทะเบียนออนไลน์ทันที
             </Col>
           </Row>
+          </Link>
         </div>
       </Col>
     </Row>

@@ -45,22 +45,24 @@ function App() {
             เพิ่มประสิทธิภาพ ลดระยะเวลา ยกระดับร้านซ่อมไปกับเรา
           </Title>
           <Row className="box-button">
-            
-              <Col
-                xs={{ span: 11, offset: 1 }}
-                lg={{ span: 10, offset: 2 }}
-                className="bt-register"
-              >
-                <Link className="text-register" to={"/register"}>ลงทะเบียนใช้งานฟรี</Link>
-              </Col>
-            
+            <Col
+              xs={{ span: 11, offset: 1 }}
+              lg={{ span: 10, offset: 2 }}
+              className="bt-register"
+            >
+              <Link className="text-register" to={"/register"}>
+                ลงทะเบียนใช้งานฟรี
+              </Link>
+            </Col>
 
             <Col
               xs={{ span: 11, offset: 1 }}
               lg={{ span: 10, offset: 2 }}
               className="bt-login"
             >
-              <Link className="text-login" to={"/login"}>เข้าสู่ระบบ</Link>
+              <Link className="text-login" to={"/login"}>
+                เข้าสู่ระบบ
+              </Link>
             </Col>
           </Row>
         </Col>

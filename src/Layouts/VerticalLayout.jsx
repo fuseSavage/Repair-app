@@ -1,34 +1,53 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
-import { Layout } from 'antd'
+import { Layout } from "antd";
 
+// import Component
 import HeaderTap from "./tabHeader";
 import MenuList from "./menulist";
+import MenuDashboard from './munuDashboard'
 
 //import
 // import Login from "../view/Login";
 // import RegistionPage from "../view/Registion";
 
-
-
-const { Content, Footer } = Layout
+const { Content, Footer } = Layout;
 
 export default function VerticalLayout(props) {
-  const { children } = props
+  const { children } = props;
+  // let test = "";
+  const history = useHistory();
 
+  const [checkLocal, setChechLocal] = useState(null);
+
+  useEffect(() => {
+    // console.log("local", localStorage.getItem("user"));
+    setChechLocal(JSON.parse(localStorage.getItem("user")))
+  }, []);
+
+  if (checkLocal === null) {
+    history.push("/")
+  }else {
+    history.push("/dashboard")
+  }
+
+  
+  // console.log(checkLocal);
 
   return (
-      <>
-        <HeaderTap
-          className="site-layout-background"
-          style={{
-            padding: 0,
-            position: "fixed",
-            zIndex: 1,
-            width: "100%",
-          }}
-        />
+    <>
+      <HeaderTap
+        className="site-layout-background"
+        style={{
+          padding: 0,
+          position: "fixed",
+          zIndex: 1,
+          width: "100%",
+        }}
+      />
 
+      {checkLocal === null ? (
         <Layout
           style={{ minHeight: "93vh", maxHeight: "90vh", paddingTop: "0.5vh" }}
         >
@@ -48,6 +67,19 @@ export default function VerticalLayout(props) {
             </Footer>
           </Layout>
         </Layout>
-      </>
-    );
+      ) : (
+        <>
+          <Layout
+            style={{
+              minHeight: "93vh",
+              maxHeight: "90vh",
+              paddingTop: "0.5vh",
+            }}
+          >
+            <MenuDashboard />
+          </Layout>
+        </>
+      )}
+    </>
+  );
 }

@@ -93,7 +93,7 @@ export default function RegistrationForm() {
           scale: 1.0,
           scaleMobile: 1.0,
           backgroundColor: 0xffffff,
-          quantity: 5.00,
+          quantity: 3.00,
         })
       );
     }
@@ -197,7 +197,7 @@ export default function RegistrationForm() {
               ]}
               hasFeedback
             >
-              <Input.Password />
+              <Input.Password minLength={6} />
             </Form.Item>
             {/* confirm Password  ยืนยันรหัสผ่าน */}
             <Form.Item
@@ -223,7 +223,7 @@ export default function RegistrationForm() {
                 }),
               ]}
             >
-              <Input.Password />
+              <Input.Password minLength={6} />
             </Form.Item>
 
             {/* User Name  ชื่อ-นามสกุล */}

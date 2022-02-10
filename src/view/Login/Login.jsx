@@ -31,19 +31,32 @@ function App() {
     };
   }, [vantaEffect]);
 
+  // const user = JSON.parse(localStorage.getItem('user'))
+  // console.log(user)
+
   const onFinish = (values) => {
     const data = {
       garageID: values.garageID,
       password: values.password,
     };
-    console.log(data);
+    // console.log(data);
 
-    sendLogin(data).then((response) => console.log("response", response));
+    sendLogin(data).then((response) => {
+      // console.log('response', response.userData)
+      setTimeout(() => {
+        window.location.reload(false);
+      }, 1000);
+    });
   };
+
+  // const removestr = () => {
+  //   sendLogout();
+  //   window.location.reload(false);
+  // }
 
   return (
     <div className="h-100" ref={myRef}>
-      <Row >
+      <Row>
         <Col
           span={4}
           xs={{ order: 1 }}

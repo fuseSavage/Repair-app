@@ -1,4 +1,4 @@
-import { React } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Layout, Row } from "antd";
 import { useHistory } from "react-router-dom";
 
@@ -7,8 +7,19 @@ const { Header } = Layout;
 export default function App() {
   const history = useHistory();
 
+  const [checkLocal, setChechLocal] = useState(null);
+
+  useEffect(() => {
+    // console.log("local", localStorage.getItem("user"));
+    setChechLocal(JSON.parse(localStorage.getItem("user")));
+  }, []);
+
   const clicklogo = () => {
-    history.push("/");
+    if (checkLocal === null) {
+      history.push("/");
+    } else {
+      history.push("/dashboard");
+    }
   };
   // const onclickLogin = () => {
   //   console.log('click login')
