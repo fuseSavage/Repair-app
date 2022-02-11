@@ -31,8 +31,8 @@ export const sendLogin = (data) => {
 
 // logout
 export const sendLogout = () => {
-  return localStorage.removeItem("user")
-}
+  return localStorage.removeItem("user");
+};
 
 // get list All garage
 export const FetchGarageAll = () => {
@@ -46,4 +46,24 @@ export const FetchGarageAll = () => {
         console.log(err);
       })
   );
+};
+
+// Fetch Thai Address API
+export const FetchThaiAddress = () => {
+  return axios
+    .get("https://thaiaddressapi-thaikub.herokuapp.com/v1/thailand/provinces")
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// get Thai Address API
+export const FetchMemberTel = () => {
+  return axios
+    .get(process.env.REACT_APP_SECRET_API + "/member/all")
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
 };

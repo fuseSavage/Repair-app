@@ -1,14 +1,11 @@
+import React from "react";
+// import React, { useEffect, useState } from "react";
 // Router
-import { BrowserRouter as AppRouter, Route, Switch } from "react-router-dom";
-
-// import Ecommerce from "../view/Dashboards/ecommerce";
-
-// import HeaderTap from "../Layouts/tabHeader";
-// import MenuList from "../Layouts/menulist";
-
-//import
-// import Login from "../view/Login";
-// import RegistionPage from "../view/Registion";
+import {
+  BrowserRouter as AppRouter,
+  Route,
+  Switch,
+} from "react-router-dom";
 
 // Routes
 import { Routes } from "./routes";
@@ -16,23 +13,31 @@ import { Routes } from "./routes";
 // Layouts
 import VerticalLayout from "../Layouts/VerticalLayout";
 import FullLayout from "../Layouts/FullLayout";
+// import DashboardLayout from "../Layouts/DashboardLayout";
 
 // Components
 
 import ProtectedRoute from "../ProtectdRoute";
 
-// import { Layout } from "antd";
-
-// const { Content, Footer } = Layout;
-
 export default function Routers() {
+  // const history = useHistory();
+  // const [checkLocal, setChechLocal] = useState(null);
+
+  // useEffect(() => {
+  //   console.log("local", localStorage.getItem("user") === null);
+  //   setChechLocal(JSON.parse(localStorage.getItem("user")));
+  // }, []);
+
+
   // Default Layout
   const DefaultLayout = null; // FullLayout or VerticalLayout
 
   // All of the available layouts
   const Layouts = { VerticalLayout, FullLayout };
 
-  // Return Filtered Array of Routes & Paths
+  // const LayoutsDashboard = { DashboardLayout, FullLayout };
+
+  // Return Filtered Array of Routes & Paths for default page
   const LayoutRoutesAndPaths = (layout) => {
     const LayoutRoutes = [];
     const LayoutPaths = [];
@@ -48,9 +53,28 @@ export default function Routers() {
     return { LayoutRoutes, LayoutPaths };
   };
 
+  // Return Filtered Array of Routes & Paths for dashboard page
+  // const LayoutRoutesAndPathsDashboard = (layout) => {
+  //   const LayoutRoutes2 = [];
+  //   const LayoutPaths2 = [];
+  //   if (Routes) {
+  //     // Checks if Route layout or Default layout matches current layout
+  //     Routes.filter(
+  //       (route) =>
+  //         (route.layout === layout || DefaultLayout === layout) &&
+  //         (LayoutRoutes2.push(route), LayoutPaths2.push(route.path))
+  //     );
+  //   }
+
+  //   return { LayoutRoutes2, LayoutPaths2 };
+  // };
+
+
+
   // Return Route to Render
-  const ResolveRoutes = () => {
-    return Object.keys(Layouts).map((layout, index) => {
+  const ResolveRoutes =  () => {
+  
+    return  Object.keys(Layouts).map((layout, index) => {
       const { LayoutRoutes, LayoutPaths } = LayoutRoutesAndPaths(layout);
       const LayoutTag = Layouts[layout];
       return (
@@ -74,9 +98,58 @@ export default function Routers() {
     });
   };
 
+  // Return Route to Render
+  // const ResolveRoutesDash =  () => {
+  //   console.log("local2", checkLocal);
+  //   return  Object.keys(LayoutsDashboard).map((layout, index) => {
+  //     const { LayoutRoutes2, LayoutPaths2 } =
+  //       LayoutRoutesAndPathsDashboard(layout);
+  //     const LayoutTag = LayoutsDashboard[layout];
+  //     return (
+  //       <Route path={LayoutPaths2} key={index}>
+  //         <LayoutTag>
+  //           <Switch>
+  //             {LayoutRoutes2.map((route) => {
+  //               return (
+  //                 <ProtectedRoute
+  //                   key={route.path}
+  //                   path={route.path}
+  //                   exact
+  //                   component={route.component}
+  //                 />
+  //               );
+  //             })}
+  //           </Switch>
+  //         </LayoutTag>
+  //       </Route>
+  //     );
+  //   });
+  // };
+
+  // let ContentMain;
+
+  // const Resolve = () => {
+  //   // {checkLocal === null ? ResolveRoutes() : ResolveRoutesDash()}
+  //   return (
+  //     <>
+  //       {checkLocal === null ? <ResolveRoutes /> : <ResolveRoutesDash />}
+  //     </>
+  //   )
+  // }
+
+  // if (checkLocal === null) {
+    
+  //   history.push("/");
+  // } else {
+  //   history.push("/dashboard/add-detail");
+  // }
+
+
   return (
     <AppRouter>
-      <Switch>{ResolveRoutes()}</Switch>
+      <Switch>
+        {ResolveRoutes()}
+      </Switch>
     </AppRouter>
   );
 }

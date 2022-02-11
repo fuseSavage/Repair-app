@@ -54,9 +54,14 @@ const PagesRoutes = [
 
   // pages 404
   {
-    path: '/pages/error-404',
-    component: lazy(() => import('../../view/Errors/404/index')),
-    layout: 'FullLayout',
+    path: '/dashboard',
+    component: lazy(() => import('../../view/Dashboards/repairDashboard/repairAdd/index')),
+    layout: 'VerticalLayout',
+  },
+  {
+    path: '/dashboard/add-detail',
+    component: lazy(() => import('../../view/Dashboards/repairDashboard/repairAdd/index')),
+    layout: 'VerticalLayout',
   },
 ];
 

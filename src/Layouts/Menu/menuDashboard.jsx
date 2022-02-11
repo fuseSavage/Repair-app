@@ -13,10 +13,11 @@ import {
   CommentOutlined,
   SettingOutlined,
   LogoutOutlined,
+  DollarOutlined,
 } from "@ant-design/icons";
 
 // import services
-import { sendLogout } from "../services";
+import { sendLogout } from "../../services";
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -29,7 +30,7 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    console.log("test Logout");
+    // console.log("test Logout");
     sendLogout();
     setTimeout(() => {
       window.location.reload(false);
@@ -38,7 +39,13 @@ export default function App() {
 
   return (
     <>
-      <div style={{ mixHeight: 360, overflowY: "scroll" }}>
+      <div
+        style={{
+          mixHeight: 360,
+          backgroundColor: "#001529",
+          overflowY: "scroll",
+        }}
+      >
         <Sider
           theme="dark"
           collapsible
@@ -71,22 +78,6 @@ export default function App() {
               </Menu.Item>
             </SubMenu>
 
-            <SubMenu
-              key="sub1"
-              icon={<UnorderedListOutlined />}
-              title="จัดการงานซ่อม"
-            >
-              <Menu.Item key="2" icon={<OrderedListOutlined />}>
-                <Link to={"/dashboard/all-repair"}>รายการซ่อม</Link>
-              </Menu.Item>
-              <Menu.Item key="3" icon={<AppstoreAddOutlined />}>
-                <Link to={"/dashboard/add-detail"}>เพิ่มการซ่อม</Link>
-              </Menu.Item>
-              <Menu.Item key="4" icon={<ToolOutlined />}>
-                <Link to={"/dashboard/status"}>สถานะการซ่อม</Link>
-              </Menu.Item>
-            </SubMenu>
-
             <SubMenu key="sub2" icon={<TeamOutlined />} title="จัดการลูกค้า">
               <Menu.Item key="5" icon={<UserAddOutlined />}>
                 <Link to={"/dashboard/add-member"}>ลงทะเบียนลูกค้า</Link>
@@ -99,6 +90,10 @@ export default function App() {
               </Menu.Item>
             </SubMenu>
 
+            <Menu.Item key="10" icon={<DollarOutlined />}>
+              <Link to={"/dashboard/payment"}>การชำระเงิน</Link>
+            </Menu.Item>
+
             <Menu.Item key="8" icon={<SettingOutlined />}>
               <Link to={"/dashboard/setting"}>ตั้งค่าบัญชี</Link>
             </Menu.Item>
@@ -109,7 +104,7 @@ export default function App() {
 
             <Menu.Item
               onClick={handleLogout}
-              key="10"
+              key="11"
               icon={<LogoutOutlined />}
             >
               ออกจากระบบ
