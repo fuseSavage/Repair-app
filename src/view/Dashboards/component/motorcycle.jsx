@@ -9,12 +9,13 @@ import {
   Select,
   Divider,
   DatePicker,
+  Modal,
 } from "antd";
 
 // import services
-import { FetchThaiAddress, FetchMemberTel } from "../../../../../services";
+import { FetchThaiAddress, FetchMemberTel, InsertDetails } from "../../../services";
 
-import Brand from "../data/brand.json";
+import Brand from "../repairDashboard/repairAdd/data/brand.json";
 
 // const { Title, Text } = Typography;
 const { Option } = Select;
@@ -70,13 +71,25 @@ export default function App(props) {
       model: values.model,
       kilo_number: values.kilo_number,
       repair_date: newDate,
-      repair_detail: values.repair_detail,
+      repair_details: values.repair_details,
+
+      status: "อยู่ระหว่างการซ่อม",
+      price: 0,
+      spare_parts_list: null,
+      status_payment: "ยังไม่ได้ชำระ",
+      equipment: null,
     };
 
     if (member.includes(values.member_tel) === true) {
-      console.log("datas", data);
+      InsertDetails(data).then((response) => {
+        console.log("response", response);
+      });
+      window.location.reload(false)
     } else {
-      alert(`หมายเลข ${values.member_tel} นี้ ยังไม่ได้สมัครสมาชิก กรุณาสมัครสมาชิกก่อนเพิ่มการซ่อม`)
+      Modal.info({
+        title: "ลูกค้ายังไม่ได้สมัครสมาชิก",
+        content: `หมายเลข ${values.member_tel} นี้ ยังไม่ได้สมัครสมาชิก กรุณาสมัครสมาชิกก่อนเพิ่มการซ่อม `,
+      });
     }
   };
 
@@ -206,7 +219,7 @@ export default function App(props) {
                       >
                         {Brand.length !== 0 ? (
                           <>
-                            {Brand.type.car.map((brand, index) => (
+                            {Brand.type.moto.map((brand, index) => (
                               <Option key={index} value={brand}>
                                 {brand}
                               </Option>
@@ -280,14 +293,14 @@ export default function App(props) {
                   <Col xs={4} md={4} xl={4}></Col>
                   <Col xs={16} md={16} xl={16}>
                     <Form.Item
-                      name="repair_detail"
+                      name="repair_details"
                       label="รายละเอียดการซ่อมเบื้องต้น"
                       tooltip="รายละเอียดการซ่อมเบื้องต้น"
                     >
                       <Input.TextArea />
                     </Form.Item>
                     <Form.Item>
-                      <Button type="primary" htmlType="submit">
+                      <Button className="bt-them" htmlType="submit">
                         เพิ่มการซ่อม
                       </Button>
                     </Form.Item>

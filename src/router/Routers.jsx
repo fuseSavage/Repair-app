@@ -20,13 +20,6 @@ import FullLayout from "../Layouts/FullLayout";
 import ProtectedRoute from "../ProtectdRoute";
 
 export default function Routers() {
-  // const history = useHistory();
-  // const [checkLocal, setChechLocal] = useState(null);
-
-  // useEffect(() => {
-  //   console.log("local", localStorage.getItem("user") === null);
-  //   setChechLocal(JSON.parse(localStorage.getItem("user")));
-  // }, []);
 
 
   // Default Layout
@@ -35,7 +28,6 @@ export default function Routers() {
   // All of the available layouts
   const Layouts = { VerticalLayout, FullLayout };
 
-  // const LayoutsDashboard = { DashboardLayout, FullLayout };
 
   // Return Filtered Array of Routes & Paths for default page
   const LayoutRoutesAndPaths = (layout) => {
@@ -52,22 +44,6 @@ export default function Routers() {
 
     return { LayoutRoutes, LayoutPaths };
   };
-
-  // Return Filtered Array of Routes & Paths for dashboard page
-  // const LayoutRoutesAndPathsDashboard = (layout) => {
-  //   const LayoutRoutes2 = [];
-  //   const LayoutPaths2 = [];
-  //   if (Routes) {
-  //     // Checks if Route layout or Default layout matches current layout
-  //     Routes.filter(
-  //       (route) =>
-  //         (route.layout === layout || DefaultLayout === layout) &&
-  //         (LayoutRoutes2.push(route), LayoutPaths2.push(route.path))
-  //     );
-  //   }
-
-  //   return { LayoutRoutes2, LayoutPaths2 };
-  // };
 
 
 

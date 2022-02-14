@@ -67,3 +67,45 @@ export const FetchMemberTel = () => {
       console.log(err);
     });
 };
+
+// send data to InsertDetails
+export const InsertDetails = (data) => {
+  return axios
+    .post(process.env.REACT_APP_SECRET_API + "/repairdetail/insert", data)
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// get data FetctDetailByGarage
+export const FetctDetailByGarage = (data) => {
+  // console.log('fetdata', data)
+  return (
+    axios
+      // .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getbygarage", data)
+      .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getbygarage", {
+        params: data,
+      })
+      .then((response) => response.data)
+      .catch((err) => {
+        console.log(err);
+      })
+  );
+};
+
+// get data FetctDetailByGarageID
+export const FetctDetailByGarageID = (data) => {
+  // console.log('fetdata', data)
+  return (
+    axios
+      // .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getbygarage", data)
+      .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getbydetailID", {
+        params: data,
+      })
+      .then((response) => response.data)
+      .catch((err) => {
+        console.log(err);
+      })
+  );
+};

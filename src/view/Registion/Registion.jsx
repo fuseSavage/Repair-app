@@ -492,7 +492,7 @@ export default function RegistrationForm() {
 
             <Form.Item {...tailFormItemLayout}>
               <Button
-                type="primary"
+                className="bt-them"
                 htmlType="submit"
                 style={{ marginTop: "30px" }}
               >

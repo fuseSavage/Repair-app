@@ -49,10 +49,7 @@ function App() {
     });
   };
 
-  // const removestr = () => {
-  //   sendLogout();
-  //   window.location.reload(false);
-  // }
+
 
   return (
     <div className="h-100" ref={myRef}>
@@ -122,7 +119,7 @@ function App() {
                 span: 16,
               }}
             >
-              <Button type="primary" htmlType="submit">
+              <Button className="bt-them" htmlType="submit" >
                 ยืนยัน
               </Button>
             </Form.Item>

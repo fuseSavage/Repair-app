@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Row, Col, Typography, Checkbox, Form } from "antd";
+import { Row, Col, Typography, Checkbox, Form, Modal, Button } from "antd";
 
 import { useHistory } from "react-router-dom";
 
@@ -13,7 +13,11 @@ export default function App() {
 
   const handleSubmit = () => {
     if (chechBox === false) {
-      alert("กรุณาอ่านข้อกำหนดและเงื่อนไขในการให้บริการ!!");
+      // alert("กรุณาอ่านข้อกำหนดและเงื่อนไขในการให้บริการ!!");
+      Modal.info({
+        title: "ข้อกำหนดและเงื่อนไข",
+        content: `กรุณาอ่านข้อกำหนดและเงื่อนไขในการใช้บริการ`,
+      });
     } else {
       history.push("/register/registion");
     }
@@ -82,7 +86,11 @@ export default function App() {
                         validator: (_, value) =>
                           value
                             ? Promise.resolve()
-                            : Promise.reject(new Error("กรุณาคลิ๊กที่ช่องว่าง เพื่อยอมรับข้อตกลง")),
+                            : Promise.reject(
+                                new Error(
+                                  "กรุณาคลิ๊กที่ช่องว่าง เพื่อยอมรับข้อตกลง"
+                                )
+                              ),
                       },
                     ]}
                   >
@@ -97,9 +105,10 @@ export default function App() {
                 </Form>
               </div>
               <div className="div-button-submit">
-                <div className="button-submit" onClick={handleSubmit}>
-                  ถัดไป
-                </div>
+               
+                <Button className="bt-them" onClick={handleSubmit}>
+                  ยืนยัน
+                </Button>
               </div>
             </div>
           </Col>

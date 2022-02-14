@@ -6,36 +6,23 @@ import {
   Form,
   Input,
   Button,
-  Select,
   Divider,
   DatePicker,
+  Modal,
 } from "antd";
 
 // import services
-import { FetchThaiAddress, FetchMemberTel } from "../../../../../services";
-
-import Brand from "../data/brand.json";
+import { FetchMemberTel, InsertDetails } from "../../../services";
 
 // const { Title, Text } = Typography;
-const { Option } = Select;
 
 export default function App(props) {
   const { typeSelect, checkLocal } = props;
 
   // UseState
-  const [province, setProvinec] = useState([]);
   const [member, setMember] = useState([]);
 
   useEffect(() => {
-    const getThaiAddress = async () => {
-      await FetchThaiAddress().then((response) => {
-        if (response) {
-          setProvinec(response.data);
-        }
-      });
-    };
-    getThaiAddress();
-
     const getMemberTel = async () => {
       await FetchMemberTel().then((response) => {
         if (response) {
@@ -64,19 +51,33 @@ export default function App(props) {
       garageID: checkLocal.userData.userId,
       member_tel: values.member_tel,
       device_type: typeSelect,
-      car_number: values.car_number,
-      car_province: values.car_province,
+      equipment: values.equipment,
       brand: values.brand,
-      model: values.model,
-      kilo_number: values.kilo_number,
       repair_date: newDate,
-      repair_detail: values.repair_detail,
+      repair_details: values.repair_details,
+
+      car_number: null,
+      car_province: null,
+      model: null,
+      kilo_number: null,
+      status: "อยู่ระหว่างการซ่อม",
+      price: 0,
+      spare_parts_list: null,
+      status_payment: "ยังไม่ได้ชำระ",
     };
 
+    // console.log('test data', data)
+
     if (member.includes(values.member_tel) === true) {
-      console.log("datas", data);
+      InsertDetails(data).then((response) => {
+        console.log("response", response);
+      });
+      window.location.reload(false)
     } else {
-      alert(`หมายเลข ${values.member_tel} นี้ ยังไม่ได้สมัครสมาชิก กรุณาสมัครสมาชิกก่อนเพิ่มการซ่อม`)
+      Modal.info({
+        title: "ลูกค้ายังไม่ได้สมัครสมาชิก",
+        content: `หมายเลข ${values.member_tel} นี้ ยังไม่ได้สมัครสมาชิก กรุณาสมัครสมาชิกก่อนเพิ่มการซ่อม `,
+      });
     }
   };
 
@@ -120,16 +121,16 @@ export default function App(props) {
                 </Col>
 
                 <Row gutter={[0, 16]}>
-                  {/* หมายเลขทะเบียนรถ */}
+                  {/* ชนิดของอุปกรณ์ */}
                   <Col
                     xs={24}
                     md={{ span: 11, offset: 1 }}
                     xl={{ span: 7, offset: 1 }}
                   >
                     <Form.Item
-                      name="car_number"
-                      label="ทะเบียนรถ"
-                      tooltip="หมายเลขทะเบียนรถ"
+                      name="equipment"
+                      label="ประเภทอุปกรณ์"
+                      tooltip="ประเภทของอุปกรณ์ เช่น เครื่องสูบน้ำ หรือเครื่องตัดหญ้า"
                       rules={[
                         {
                           required: true,
@@ -142,45 +143,6 @@ export default function App(props) {
                     </Form.Item>
                   </Col>
 
-                  {/* จังหวัด */}
-                  <Col
-                    xs={24}
-                    md={{ span: 11, offset: 1 }}
-                    xl={{ span: 7, offset: 1 }}
-                  >
-                    <Form.Item
-                      name="car_province"
-                      label="จังหวัด"
-                      tooltip="ทะเบียนจังหวัด"
-                      rules={[
-                        {
-                          required: true,
-                          message: "กรุณาเลือกทะเบียนจังหวัด!",
-                          whitespace: true,
-                        },
-                      ]}
-                    >
-                      <Select
-                        allowClear
-                        style={{ width: "100%" }}
-                        placeholder="เลือกจังหวัด"
-                        // onChange={(e) => {
-                        //   setTypeSelect(e);
-                        // }}
-                      >
-                        {province.length !== 0 ? (
-                          <>
-                            {province.map((api, index) => (
-                              <Option key={index} value={api.province}>
-                                {api.province}
-                              </Option>
-                            ))}
-                          </>
-                        ) : null}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-
                   {/* ยี่ห้อ */}
                   <Col
                     xs={24}
@@ -190,69 +152,11 @@ export default function App(props) {
                     <Form.Item
                       name="brand"
                       label="ยี่ห้อ"
-                      tooltip="ยี่ห้อของรถ"
+                      tooltip="ยี่ห้อของอุปกรณ์การเกษตร"
                       rules={[
                         {
                           required: true,
-                          message: "กรุณาเลือกยี่ห้อของรถ!",
-                          whitespace: true,
-                        },
-                      ]}
-                    >
-                      <Select
-                        allowClear
-                        style={{ width: "100%" }}
-                        placeholder="เลือกยี่ห้อ"
-                      >
-                        {Brand.length !== 0 ? (
-                          <>
-                            {Brand.type.moto.map((brand, index) => (
-                              <Option key={index} value={brand}>
-                                {brand}
-                              </Option>
-                            ))}
-                          </>
-                        ) : null}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-
-                  {/* รุ่น Model */}
-                  <Col
-                    xs={24}
-                    md={{ span: 11, offset: 1 }}
-                    xl={{ span: 7, offset: 1 }}
-                  >
-                    <Form.Item
-                      name="model"
-                      label="รุ่น"
-                      tooltip="รุ่นของรถ"
-                      rules={[
-                        {
-                          required: true,
-                          message: "กรุณากรอกรุ่นของรถ!",
-                          whitespace: true,
-                        },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
-                  </Col>
-
-                  {/* รุ่น Kilo Number */}
-                  <Col
-                    xs={24}
-                    md={{ span: 11, offset: 1 }}
-                    xl={{ span: 7, offset: 1 }}
-                  >
-                    <Form.Item
-                      name="kilo_number"
-                      label="หมายเลขกิโล"
-                      tooltip="หมายเลขกิโลของรถ ณ วันที่ซ่อม"
-                      rules={[
-                        {
-                          required: true,
-                          message: "กรุณากรอกหมายเลขกิโล!",
+                          message: "กรุณาระบุยี่ห้อของอุปกรณ์การเกษตร!",
                           whitespace: true,
                         },
                       ]}
@@ -268,9 +172,9 @@ export default function App(props) {
                     xl={{ span: 7, offset: 1 }}
                   >
                     <Form.Item
-                      label="วันที่รับรถ"
+                      label="วันที่รับซ่อม"
                       name="repair_date"
-                      tooltip="เลือกวันที่รับรถ"
+                      tooltip="เลือกวันที่รับซ่อม"
                     >
                       <DatePicker />
                     </Form.Item>
@@ -280,14 +184,14 @@ export default function App(props) {
                   <Col xs={4} md={4} xl={4}></Col>
                   <Col xs={16} md={16} xl={16}>
                     <Form.Item
-                      name="repair_detail"
+                      name="repair_details"
                       label="รายละเอียดการซ่อมเบื้องต้น"
                       tooltip="รายละเอียดการซ่อมเบื้องต้น"
                     >
                       <Input.TextArea />
                     </Form.Item>
                     <Form.Item>
-                      <Button type="primary" htmlType="submit">
+                      <Button className="bt-them" htmlType="submit">
                         เพิ่มการซ่อม
                       </Button>
                     </Form.Item>

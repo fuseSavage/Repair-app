@@ -52,15 +52,31 @@ const PagesRoutes = [
     layout: "VerticalLayout",
   },
 
-  // pages 404
+  // Dashboard
   {
     path: '/dashboard',
-    component: lazy(() => import('../../view/Dashboards/repairDashboard/repairAdd/index')),
+    component: lazy(() => import('../../view/Dashboards/ecommerce/index')),
     layout: 'VerticalLayout',
   },
+
+  // add-detail
   {
     path: '/dashboard/add-detail',
     component: lazy(() => import('../../view/Dashboards/repairDashboard/repairAdd/index')),
+    layout: 'VerticalLayout',
+  },
+
+  // all-repair
+  {
+    path: '/dashboard/all-repair',
+    component: lazy(() => import('../../view/Dashboards/repairDashboard/repairList/index')),
+    layout: 'VerticalLayout',
+  },
+
+  // show-repair
+  {
+    path: '/dashboard/all-repair/detail',
+    component: lazy(() => import('../../view/Dashboards/repairDashboard/repairList/ShowDetail')),
     layout: 'VerticalLayout',
   },
 ];

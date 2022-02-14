@@ -8,13 +8,13 @@ import HeaderTap from "./Header/tabHeader";
 import MenuList from "./Menu/menulist";
 import MenuDashboard from "./Menu/menuDashboard";
 
-
 const { Content, Footer } = Layout;
 
 export default function VerticalLayout(props) {
   const { children } = props;
   // let test = "";
   const history = useHistory();
+  
 
   const [checkLocal, setChechLocal] = useState(null);
 
@@ -26,7 +26,10 @@ export default function VerticalLayout(props) {
   if (checkLocal === null) {
     history.push("/");
   } else {
-    history.push("/dashboard");
+    history.push({
+       pathname: "/dashboard",
+       state: checkLocal.userData.userId
+       });
   }
 
   // console.log(checkLocal);

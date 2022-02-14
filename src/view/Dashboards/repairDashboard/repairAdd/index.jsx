@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, Typography, Select } from "antd";
 
 // import Component
-import Car from "./component/car";
-import Agriculture from "./component/agriculture";
-import Motorcycle from "./component/motorcycle";
+import Car from "../../component/car";
+import Agriculture from "../../component/agriculture";
+import Motorcycle from "../../component/motorcycle";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
