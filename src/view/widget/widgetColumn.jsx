@@ -27,39 +27,53 @@ export default function Ecommerce(props) {
   let carlist = [];
   let motolist = [];
   let agirculturelist = [];
+  let repairSum = []
+  let succeed = []
+  let notSucceed = []
 
-  for (let i = 0; i < datas.length; i++) {
-    if (datas[i].device_type === "รถยนต์") {
-      // console.log(datas[i].device_type);
-      carlist.push(datas[i].device_type);
-    }
-    if (datas[i].device_type === "รถจักรยานยนต์") {
-      motolist.push(datas[i].device_type);
-    }
-    if (datas[i].device_type === "อุปกรณ์การเกษตร") {
-      agirculturelist.push(datas[i].device_type);
+  if (datas !== null) {
+    for (let i = 0; i < datas.length; i++) {
+      if (datas[i].device_type === "รถยนต์") {
+        // console.log(datas[i].device_type);
+        carlist.push(datas[i].device_type);
+      }
+      if (datas[i].device_type === "รถจักรยานยนต์") {
+        motolist.push(datas[i].device_type);
+      }
+      if (datas[i].device_type === "อุปกรณ์การเกษตร") {
+        agirculturelist.push(datas[i].device_type);
+      }
+      // console.log(datas[i].status)
+      repairSum.push(datas[i].length)
+  
+      if (datas[i].status === "อยู่ระหว่างการซ่อม") {
+        succeed.push(datas[i].status)
+        // console.log(datas[i].status)
+      }
+      if (datas[i].status === "สำเร็จ") {
+        notSucceed.push(datas[i].status)
+      }
     }
   }
+  
 
   const options = {
     animationEnabled: true,
-    theme: "light1", // "light1", "dark1", "dark2"
+    theme: "light2", // "light1", "dark1", "dark2"
     title: {
-      text: "รายการซ่อมทั้งหมด",
+      text: "สรุปการซ่อม",
     },
     data: [
       {
-        type: "column",
+        // Change type to "bar", "area", "spline", "pie",etc.
+        type: "column", 
         // indexLabel: "{label}: {y}%",
-        startAngle: 60,
+        startAngle: 90,
         dataPoints: [
-          { y: carlist.length, label: "รถยนต์" },
-          { y: motolist.length, label: "รถจักรยานยนต์" },
-          { y: agirculturelist.length, label: "อุปกรณ์การเกษตร" },
-          { y: carlist.length, label: "รถยนต์" },
-          { y: motolist.length, label: "รถจักรยานยนต์" },
-          { y: agirculturelist.length, label: "อุปกรณ์การเกษตร" },
-          { y: carlist.length, label: "รถยนต์" },
+          { y: repairSum.length, label: "การซ่อมทั้งหมด" },
+          { y: notSucceed.length, label: "สำเร็จ" },
+          { y: succeed.length, label: "กำลังดำเนินการซ่อม" },
+          
         ],
       },
     ],

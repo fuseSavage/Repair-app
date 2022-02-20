@@ -79,6 +79,42 @@ const PagesRoutes = [
     component: lazy(() => import('../../view/Dashboards/repairDashboard/repairList/ShowDetail')),
     layout: 'VerticalLayout',
   },
+
+  // status
+  // {
+  //   path: '/dashboard/status',
+  //   component: lazy(() => import('../../view/Dashboards/repairDashboard/repairSatatus/index')),
+  //   layout: 'VerticalLayout',
+  // },
+
+    // Add Member
+  {
+    path: '/dashboard/add-member',
+    component: lazy(() => import('../../view/Dashboards/member/addMember')),
+    layout: 'VerticalLayout',
+  },
+
+    // Search Repair
+    {
+      path: '/dashboard/search-repair',
+      component: lazy(() => import('../../view/Dashboards/member/searchMember')),
+      layout: 'VerticalLayout',
+    },
+
+    // Show Repair
+    {
+      path: '/dashboard/search-repair/details',
+      component: lazy(() => import('../../view/Dashboards/member/ShowDetailMember')),
+      layout: 'VerticalLayout',
+    },
+
+     // Show Repair
+     {
+      path: '/dashboard/member',
+      component: lazy(() => import('../../view/Dashboards/member/member')),
+      layout: 'VerticalLayout',
+    },
 ];
+
 
 export default PagesRoutes;

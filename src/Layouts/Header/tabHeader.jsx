@@ -31,8 +31,7 @@ export default function App() {
         <Col span={15}>
           <Row>
             <Row className="main-logo" onClick={clicklogo}>
-              <div> Repair </div>&nbsp;
-              <div className="logo"> Center</div>
+              Repair Center
             </Row>
           </Row>
         </Col>

@@ -16,7 +16,7 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 export default function App() {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
 
   const onCollapse = (collapsed) => {
     setCollapsed(collapsed);
@@ -40,7 +40,7 @@ export default function App() {
           <Menu
             theme="dark"
             defaultSelectedKeys={["1"]}
-            // defaultOpenKeys={["sub1"]}
+            defaultOpenKeys={["sub1"]}
             mode="inline"
           >
             <Menu.Item key="1" icon={<PieChartOutlined />}>

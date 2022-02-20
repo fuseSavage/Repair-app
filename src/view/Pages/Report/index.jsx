@@ -2,6 +2,8 @@ import React from "react";
 
 import { Row, Col, Typography, Form, Input, Button, Select } from "antd";
 
+import { CommentOutlined } from "@ant-design/icons";
+
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -45,18 +47,38 @@ const { Title } = Typography;
 /* eslint-enable no-template-curly-in-string */
 
 export default function App() {
+
+ 
   const onFinish = (values) => {
     console.log(values);
   };
 
   return (
     <>
-      <Row className="report-box">
-        <div className="report-content">
-          <Col span={24} className="box-text-title">
-            <Title level={4}>แจ้งปัญหาการใช้งาน</Title>
+      <Row gutter={[0, 32]}>
+        <Col
+          xs={{ span: 24 }}
+          lg={{ span: 8 }}
+          className="w-100 bg-theme display-flex-center"
+        >
+          <Col>
+            <CommentOutlined style={{ color: "#a4b3b6", fontSize: "1000%" }} />
+
+            <Title level={2} style={{ color: "#a4b3b6" }}>
+              แจ้งปัญหาการใช้งาน
+            </Title>
           </Col>
-          <Col  className="div-form">
+        </Col>
+
+        <Col
+          xs={{ span: 24 }}
+          lg={{ span: 16 }}
+          className="display-flex-center"
+        >
+          <Row >
+            <Col span={24}>
+              <Title level={4}>แจ้งปัญหาการใช้งาน</Title>
+            </Col>
             <Form {...formItemLayout} name="nest-messages" onFinish={onFinish}>
               {/* Garage type ประเภทของร้านซ่อม */}
               <Form.Item
@@ -112,21 +134,24 @@ export default function App() {
               </Form.Item>
 
               <Form.Item name="report_detail" label="ปัญหาที่จะรายงาน">
-                <Input.TextArea />
+                <Input.TextArea showCount maxLength={200} />
               </Form.Item>
 
-              <Form.Item name="report_tel" label="หมายเลขโทรศัพท์ที่ติดติดต่อได้">
+              <Form.Item
+                name="report_tel"
+                label="หมายเลขโทรศัพท์ที่ติดติดต่อได้"
+              >
                 <Input />
               </Form.Item>
 
               <Form.Item wrapperCol={{ ...formItemLayout.wrapperCol }}>
-                <Button type="primary" htmlType="submit">
+                <Button className="bt-them" htmlType="submit">
                   Submit
                 </Button>
               </Form.Item>
             </Form>
-          </Col>
-        </div>
+          </Row>
+        </Col>
       </Row>
     </>
   );

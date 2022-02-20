@@ -86,9 +86,16 @@ export default function App(props) {
 
     if (member.includes(values.member_tel) === true) {
       InsertDetails(data).then((response) => {
-        console.log("response", response);
+        Modal.info({
+          title: "สำเร็จ",
+          content: `เพิ่มการซ่อมสำเร็จ`,
+          onOk: () => {
+            setTimeout(() => {
+              window.location.reload(false);
+            }, 1);
+          },
+        });
       });
-      window.location.reload(false)
     } else {
       Modal.info({
         title: "ลูกค้ายังไม่ได้สมัครสมาชิก",

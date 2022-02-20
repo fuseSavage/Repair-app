@@ -23,10 +23,9 @@ function App() {
           scale: 1.0,
           scaleMobile: 1.0,
           backgroundColor: 0xffffff,
-          color1: 0x87,
-          color2: 0x0,
-          birdSize: 0.8,
-          quantity: 4.2,
+          color1: 0x55505f,
+          color2: 0x60931,
+          birdSize: 0.7,
         })
       );
     }
@@ -39,9 +38,9 @@ function App() {
     <Row ref={myRef} className="getstart-box">
       <div className="div-box-title">
         <Col span={24} className="getstart-box-title">
-          <Title>Repair Center</Title>
-          <Title level={3}>ระบบจัดการร้านซ่อมและศูนย์บริการ</Title>
-          <Title level={5}>
+          <Title level={1}>Repair Center</Title>
+          <Title level={2}>ระบบจัดการร้านซ่อมและศูนย์บริการ</Title>
+          <Title level={3}>
             เพิ่มประสิทธิภาพ ลดระยะเวลา ยกระดับร้านซ่อมไปกับเรา
           </Title>
           <Row className="box-button">

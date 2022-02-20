@@ -8,13 +8,12 @@ import HeaderTap from "./Header/tabHeader";
 import MenuList from "./Menu/menulist";
 import MenuDashboard from "./Menu/menuDashboard";
 
-const { Content, Footer } = Layout;
+const { Content } = Layout;
 
 export default function VerticalLayout(props) {
   const { children } = props;
   // let test = "";
   const history = useHistory();
-  
 
   const [checkLocal, setChechLocal] = useState(null);
 
@@ -23,16 +22,17 @@ export default function VerticalLayout(props) {
     setChechLocal(JSON.parse(localStorage.getItem("user")));
   }, []);
 
+  
+
   if (checkLocal === null) {
     history.push("/");
   } else {
     history.push({
-       pathname: "/dashboard",
-       state: checkLocal.userData.userId
-       });
+      pathname: "/dashboard",
+      state: checkLocal.userData.userId,
+    });
+    // console.log('test', checkLocal)
   }
-
-  // console.log(checkLocal);
 
   return (
     <>
@@ -48,7 +48,7 @@ export default function VerticalLayout(props) {
 
       {checkLocal === null ? (
         <Layout
-          style={{ minHeight: "93vh", maxHeight: "90vh", paddingTop: "0.5vh" }}
+          style={{ minHeight: "90vh", maxHeight: "90vh" }}
         >
           <MenuList />
 
@@ -61,17 +61,17 @@ export default function VerticalLayout(props) {
                 {children}
               </div>
             </Content>
-            <Footer className="footer">
+            {/* <Footer className="footer">
               <p>Final Project ©2021 Developed by Chaiwat Singkibut</p>
-            </Footer>
+            </Footer> */}
           </Layout>
         </Layout>
       ) : (
         <Layout
           style={{
-            minHeight: "93vh",
+            minHeight: "90vh",
             maxHeight: "90vh",
-            paddingTop: "0.5vh",
+            // paddingTop: "0.5vh",
           }}
         >
           <MenuDashboard />
@@ -84,9 +84,9 @@ export default function VerticalLayout(props) {
                 {children}
               </div>
             </Content>
-            <Footer className="footer">
+            {/* <Footer className="footer">
               <p>Final Project ©2021 Developed by Chaiwat Singkibut</p>
-            </Footer>
+            </Footer> */}
           </Layout>
         </Layout>
       )}

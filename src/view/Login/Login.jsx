@@ -1,39 +1,15 @@
 // import liff from "@line/liff";
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 
-import { Form, Input, Button, Row, Col, Divider } from "antd";
+import { Form, Input, Button, Row, Col, Modal, Typography } from "antd";
 
-import BIRDS from "vanta/dist/vanta.birds.min";
+import { LoginOutlined } from "@ant-design/icons";
 
 import { sendLogin } from "../../services";
 
+const { Title } = Typography;
+
 function App() {
-  const [vantaEffect, setVantaEffect] = useState(0);
-  const myRef = useRef(null);
-  useEffect(() => {
-    if (!vantaEffect) {
-      setVantaEffect(
-        BIRDS({
-          el: myRef.current,
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.0,
-          minWidth: 200.0,
-          scale: 1.0,
-          scaleMobile: 1.0,
-          backgroundColor: 0xffffff,
-        })
-      );
-    }
-    return () => {
-      if (vantaEffect) vantaEffect.destroy();
-    };
-  }, [vantaEffect]);
-
-  // const user = JSON.parse(localStorage.getItem('user'))
-  // console.log(user)
-
   const onFinish = (values) => {
     const data = {
       garageID: values.garageID,
@@ -42,98 +18,86 @@ function App() {
     // console.log(data);
 
     sendLogin(data).then((response) => {
-      // console.log('response', response.userData)
-      setTimeout(() => {
-        window.location.reload(false);
-      }, 1000);
+      if (response.code === 200) {
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 1000);
+      } else {
+        Modal.info({
+          title: "ไม่มีผู้ใช้นี้ในระบบ",
+          content: `กรุณาตรวจสอบ UserID / รหัสผ่าน ของท่าน`,
+        });
+      }
     });
   };
 
-
-
   return (
-    <div className="h-100" ref={myRef}>
-      <Row>
+    <>
+      <Row gutter={[0, 32]}>
         <Col
-          span={4}
-          xs={{ order: 1 }}
-          sm={{ order: 2 }}
-          md={{ order: 3 }}
-          lg={{ order: 4 }}
-        ></Col>
-        <Col
-          // style={{ textAlign: "center" }}
-          span={12}
-          xs={{ order: 1 }}
-          sm={{ order: 2 }}
-          md={{ order: 3 }}
-          lg={{ order: 4 }}
+          xs={{ span: 24 }}
+          lg={{ span: 8 }}
+          className="w-100 bg-theme display-flex-center"
         >
-          <div className="title"></div>
-          <Divider orientation="center">
-            <b>เข้าสู่ระบบร้านซ่อม</b>
-          </Divider>
-          <Form
-            name="basic"
-            labelCol={{
-              span: 8,
-            }}
-            wrapperCol={{
-              span: 16,
-            }}
-            initialValues={{
-              remember: true,
-            }}
-            onFinish={onFinish}
-            autoComplete="off"
-          >
-            <Form.Item
-              label="User ID"
-              name="garageID"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณากรอก User ID ของคุณ!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+          <Col>
+            <LoginOutlined style={{ color: "#a4b3b6", fontSize: "1000%" }} />
 
-            <Form.Item
-              label="รหัสผ่าน"
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณากรอกรหัสผ่านของคุณ!",
-                },
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
-
-            <Form.Item
-              wrapperCol={{
-                offset: 8,
-                span: 16,
-              }}
-            >
-              <Button className="bt-them" htmlType="submit" >
-                ยืนยัน
-              </Button>
-            </Form.Item>
-          </Form>
+            <Title level={2} style={{ color: "#a4b3b6" }}>
+              เข้าสู่ระบบร้านค้า
+            </Title>
+          </Col>
         </Col>
+
         <Col
-          span={6}
-          xs={{ order: 1 }}
-          sm={{ order: 2 }}
-          md={{ order: 3 }}
-          lg={{ order: 4 }}
-        ></Col>
+          xs={{ span: 24 }}
+          lg={{ span: 16 }}
+          className="display-flex-center"
+        >
+          <Row>
+            <Form
+              name="basic"
+              initialValues={{
+                remember: true,
+              }}
+              onFinish={onFinish}
+              autoComplete="off"
+            >
+              <Form.Item
+                label="User ID"
+                name="garageID"
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณากรอก User ID ของคุณ!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                label="รหัสผ่าน"
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณากรอกรหัสผ่านของคุณ!",
+                  },
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
+
+              <Form.Item>
+                <Button className="bt-them" htmlType="submit">
+                  ยืนยัน
+                </Button>
+              </Form.Item>
+            </Form>
+          </Row>
+        </Col>
       </Row>
-    </div>
+    </>
   );
 }
 

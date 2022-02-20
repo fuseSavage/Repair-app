@@ -4,3 +4,12 @@ body {
     font-family: 'Mitr', sans-serif;
 }
 
+.bg-freecar {
+    /* background-image: url("../images/freeCar.jpg"); */
+    background-image: linear-gradient(#001529, #25274d);
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    /* background-size: cover; */
+  }
+  /* 44318d, 25274d, faed26 */
+

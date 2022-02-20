@@ -18,10 +18,9 @@ export const sendLogin = (data) => {
   return axios
     .post(process.env.REACT_APP_SECRET_API + "/authentication/login", data)
     .then((response) => {
-      if (response.data) {
+      if (response.data.code === 200) {
         localStorage.setItem("user", JSON.stringify(response.data));
       }
-
       return response.data;
     })
     .catch((err) => {
@@ -36,7 +35,6 @@ export const sendLogout = () => {
 
 // get list All garage
 export const FetchGarageAll = () => {
-  // console.log('test55555555', process.env.REACT_APP_SECRET_API)
   return (
     axios
       .get(process.env.REACT_APP_SECRET_API + "/garage/all")
@@ -80,23 +78,18 @@ export const InsertDetails = (data) => {
 
 // get data FetctDetailByGarage
 export const FetctDetailByGarage = (data) => {
-  // console.log('fetdata', data)
-  return (
-    axios
-      // .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getbygarage", data)
-      .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getbygarage", {
-        params: data,
-      })
-      .then((response) => response.data)
-      .catch((err) => {
-        console.log(err);
-      })
-  );
+  return axios
+    .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getbygarage", {
+      params: data,
+    })
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 // get data FetctDetailByGarageID
 export const FetctDetailByGarageID = (data) => {
-  // console.log('fetdata', data)
   return (
     axios
       // .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getbygarage", data)
@@ -109,3 +102,97 @@ export const FetctDetailByGarageID = (data) => {
       })
   );
 };
+
+// get data FetctDetailByMember
+export const FetchDetailByMember = (data) => {
+  return axios
+    .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getbymember", {
+      params: data,
+    })
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// send data to Insert Spare to Details
+export const InsertSpare = (data) => {
+  return axios
+    .post(process.env.REACT_APP_SECRET_API + "/repairdetail/insert-spare", data)
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// get data FetctDetailByGarageID
+export const FetchSpareByDetailID = (data) => {
+  return axios
+
+    .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getspare-detailid", {
+      params: data,
+    })
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// Delete Spare
+export const DeleteSpare = (data) => {
+  
+  return axios
+    .delete(process.env.REACT_APP_SECRET_API + "/repairdetail/delete-spare", {
+      data: { id: data },
+    })
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// Update Spare
+export const UpdateDetail = (data) => {
+  console.log(data);
+  return axios
+    .put(process.env.REACT_APP_SECRET_API + "/repairdetail/update-detail", data)
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+
+// Insert Member
+export const InsertMember = (data) => {
+  // console.log('service', data)
+  return axios
+    .post(process.env.REACT_APP_SECRET_API + "/member/insert", data)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+
+// get data FetctMemberByGaragename
+export const FetctMemberByGarage= (data) => {
+  // console.log(data)
+  return axios
+
+    .get(process.env.REACT_APP_SECRET_API + "/member/getmember/member-regis", {
+      params: data,
+    })
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// // logout
+// export const sendLogout = () => {
+//   return localStorage.removeItem("user");
+// };
+

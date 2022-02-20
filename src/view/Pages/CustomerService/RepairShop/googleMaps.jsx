@@ -85,6 +85,7 @@ function Map() {
               <b>{selectPark.garage_name}</b>
             </h4>
             <p>{JSON.parse(selectPark.garage_type)}</p>
+            <p>เปิด {selectPark.on_time} - {selectPark.off_time}</p>
           </div>
         </InfoWindow>
       )}

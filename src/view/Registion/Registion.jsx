@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 // import axios from "axios";
 import {
   Form,
@@ -9,6 +9,8 @@ import {
   Button,
   Divider,
   TimePicker,
+  Typography,
+  Modal,
 } from "antd";
 import moment from "moment";
 
@@ -19,8 +21,6 @@ import {
   Marker,
 } from "react-google-maps";
 
-import BIRDS from "vanta/dist/vanta.birds.min";
-
 import { sendToken } from "../../services";
 
 let newLatLng = [{ lat: 15.118524429823255, lng: 104.9075726928711 }];
@@ -28,12 +28,12 @@ let newLatLng = [{ lat: 15.118524429823255, lng: 104.9075726928711 }];
 const onMarkerDragEnd = (event) => {
   newLatLng[0].lat = event.latLng.lat();
   newLatLng[0].lng = event.latLng.lng();
-  console.log("newLat", newLatLng[0].lat, "newLng", newLatLng[0].lng);
+  // console.log("newLat", newLatLng[0].lat, "newLng", newLatLng[0].lng);
 };
 
 const MapWithAMarker = withScriptjs(
   withGoogleMap(() => (
-    <GoogleMap defaultZoom={8} defaultCenter={newLatLng[0]}>
+    <GoogleMap defaultZoom={15} defaultCenter={newLatLng[0]}>
       <Marker
         draggable={true}
         position={newLatLng[0]}
@@ -44,64 +44,11 @@ const MapWithAMarker = withScriptjs(
 );
 
 const { Option } = Select;
+const { Title } = Typography;
 
-const formItemLayout = {
-  labelCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 8,
-    },
-  },
-  wrapperCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 16,
-    },
-  },
-};
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
-  },
-};
 
 //Main Function
 export default function RegistrationForm() {
-  const [vantaEffect, setVantaEffect] = useState(0);
-  const myRef = useRef(null);
-  useEffect(() => {
-    if (!vantaEffect) {
-      setVantaEffect(
-        BIRDS({
-          el: myRef.current,
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.0,
-          minWidth: 200.0,
-          scale: 1.0,
-          scaleMobile: 1.0,
-          backgroundColor: 0xffffff,
-          quantity: 3.00,
-        })
-      );
-    }
-    return () => {
-      if (vantaEffect) vantaEffect.destroy();
-    };
-  }, [vantaEffect]);
-
   const [ontime, setOnTime] = useState();
   const [offtime, setOffTime] = useState();
 
@@ -130,7 +77,25 @@ export default function RegistrationForm() {
       tel: values.phone,
     };
 
-    sendToken(data).then((response) => console.log("response", response));
+    sendToken(data).then((response) => {
+      if (response) {
+        if (response.code === 200) {
+          Modal.info({
+            title: "เรียบร้อยแล้ว",
+            content: `สมัครสมาชิกให้ลูกค้าเรียบร้อยแล้ว`,
+            onOk: () => {
+              window.location.reload(false);
+            },
+          });
+        } else {
+          // console.log("response", response.message);
+          Modal.info({
+            title: "มีสมาชิกนี้แล้ว",
+            content: `user ID นี้ สมัครสมาชิกแล้ว กรุณาตรวจสอบอีกที`,
+          });
+        }
+      }
+    });
   };
 
   const handleOnTime = (time, timeString) => {
@@ -142,373 +107,837 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div className="h-auto" ref={myRef}>
-      <Row >
-        <Col
-          span={4}
-          xs={{ order: 1 }}
-          sm={{ order: 2 }}
-          md={{ order: 3 }}
-          lg={{ order: 4 }}
-        ></Col>
-        <Col
-          // style={{ textAlign: "center" }}
-          span={12}
-          xs={{ order: 1 }}
-          sm={{ order: 2 }}
-          md={{ order: 3 }}
-          lg={{ order: 4 }}
-        >
-          <div className="title">ลงทะเบียนร้านซ่อม</div>
+    <>
+      <Row>
+        <Col span={24}>
+          <div style={{ padding: "2%" }}>
+            <Title>ลงทะเบียนร้านซ่อม</Title>
+          </div>
           <Divider orientation="left">
-            <b>รายละเอียดของร้าน</b>
+            <Title level={4}>รายละเอียดของร้าน</Title>
           </Divider>
+
           <Form
-            {...formItemLayout}
             form={form}
             name="register"
             onFinish={onFinish}
             scrollToFirstError
           >
-            {/* User ID */}
-            <Form.Item
-              name="userID"
-              label="User ID"
-              tooltip="User ID เพื่อใช้ในการเข้าระบบในครั้งต่อไป"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาระบุ userID ของคุณ",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+            <div style={{ padding: "2% 10% 2% 10%" }}>
+              <Row gutter={[0, 16]}>
+                {/* User ID */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="userID"
+                    label="User ID"
+                    tooltip="User ID เพื่อใช้ในการเข้าระบบในครั้งต่อไป"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระบุ userID ของคุณ",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-            {/* Password  รหัสผ่าน*/}
-            <Form.Item
-              name="password"
-              label="รหัสผ่าน"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาใส่รหัสผ่านของคุณ!",
-                },
-              ]}
-              hasFeedback
-            >
-              <Input.Password minLength={6} />
-            </Form.Item>
-            {/* confirm Password  ยืนยันรหัสผ่าน */}
-            <Form.Item
-              name="confirm"
-              label="ยืนยันรหัสผ่าน"
-              dependencies={["password"]}
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณายืนยันรหัสผ่านของคุณ!",
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue("password") === value) {
-                      return Promise.resolve();
-                    }
+                {/* Password  รหัสผ่าน*/}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="password"
+                    label="รหัสผ่าน"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาใส่รหัสผ่านของคุณ!",
+                      },
+                    ]}
+                    hasFeedback
+                  >
+                    <Input.Password minLength={6} />
+                  </Form.Item>
+                </Col>
 
-                    return Promise.reject(
-                      new Error("รหัสผ่านทั้งสองที่คุณป้อนไม่ตรงกัน!")
-                    );
-                  },
-                }),
-              ]}
-            >
-              <Input.Password minLength={6} />
-            </Form.Item>
+                {/* confirm Password  ยืนยันรหัสผ่าน */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="confirm"
+                    label="ยืนยันรหัสผ่าน"
+                    dependencies={["password"]}
+                    hasFeedback
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณายืนยันรหัสผ่านของคุณ!",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || getFieldValue("password") === value) {
+                            return Promise.resolve();
+                          }
 
-            {/* User Name  ชื่อ-นามสกุล */}
-            <Form.Item
-              name="username"
-              label="ชื่อ-นามสกุล"
-              tooltip="ชื่อเจ้าของร้าน หรือผู้ที่ได้รับผิดชอบ"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาระบุ ชื่อ-นามสกุล ของคุณ!",
-                  whitespace: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+                          return Promise.reject(
+                            new Error("รหัสผ่านทั้งสองที่คุณป้อนไม่ตรงกัน!")
+                          );
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password minLength={6} />
+                  </Form.Item>
+                </Col>
 
-            {/* Garage Name ชื่อร้านซ่อม */}
-            <Form.Item
-              name="garagename"
-              label="ชื่อร้านซ่อม"
-              tooltip="ชื่อร้านซ่อม หรืออู่ซ่อมรถ"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาระบุ ชื่อร้านซ่อม หรืออู่ซ่อมรถ ของคุณ!",
-                  whitespace: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+                {/* User Name  ชื่อ-นามสกุล */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="username"
+                    label="ชื่อ-นามสกุล"
+                    tooltip="ชื่อเจ้าของร้าน หรือผู้ที่ได้รับผิดชอบ"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระบุ ชื่อ-นามสกุล ของคุณ!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-            {/* Gmail */}
-            <Form.Item
-              name="email"
-              label="E-mail"
-              rules={[
-                {
-                  type: "email",
-                  message: "ข้อมูลที่ป้อนไม่ถูกต้อง ตามรูปแบบ E-mail!",
-                },
-                {
-                  required: true,
-                  message: "กรุณาใส่อีเมลของคุณ!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+                {/* Garage Name ชื่อร้านซ่อม */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="garagename"
+                    label="ชื่อร้านซ่อม"
+                    tooltip="ชื่อร้านซ่อม หรืออู่ซ่อมรถ"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระบุ ชื่อร้านซ่อม หรืออู่ซ่อมรถ ของคุณ!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-            {/* Garage type ประเภทของร้านซ่อม */}
-            <Form.Item
-              name="garagetype"
-              label="ประเภทของร้านซ่อม"
-              tooltip="เลือกประเภทของร้านซ่อม (สามารถเลือกได้มากกว่าหนึ่งประเภท)"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาเลือกประเภทของร้านซ่อมของคุณ!",
-                },
-              ]}
-            >
-              <Select
-                mode="multiple"
-                allowClear
-                style={{ width: "100%" }}
-                placeholder="Please select"
-              >
-                <Option value="ศูนย์บริการรถยนต์">ศูนย์บริการรถยนต์</Option>
-                <Option value="อู่ซ่อมรถยนต์">อู่ซ่อมรถยนต์</Option>
-                <Option value="ศูนย์บริการรถจักรยานยนต์">
-                  ศูนย์บริการรถจักรยานยนต์
-                </Option>
-                <Option value="อู่ซ่อมรถจักรยานยนต์">
-                  อู่ซ่อมรถจักรยานยนต์
-                </Option>
-                <Option value="ร้านบริการซ่อมอุปกรณ์การเกษตร">
-                  ร้านบริการซ่อมอุปกรณ์การเกษตร
-                </Option>
-              </Select>
-            </Form.Item>
+                {/* Gmail */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="email"
+                    label="E-mail"
+                    rules={[
+                      {
+                        type: "email",
+                        message: "ข้อมูลที่ป้อนไม่ถูกต้อง ตามรูปแบบ E-mail!",
+                      },
+                      {
+                        required: true,
+                        message: "กรุณาใส่อีเมลของคุณ!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-            {/* หมายเลขโทรศัพท์ */}
-            <Form.Item
-              style={{ marginTop: "20px" }}
-              name="phone"
-              label="หมายเลขโทรศัพท์"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาใส่หมายเลขโทรศัพท์ของคุณ!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+                {/* Garage type ประเภทของร้านซ่อม */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="garagetype"
+                    label="ประเภทของร้านซ่อม"
+                    tooltip="เลือกประเภทของร้านซ่อม (สามารถเลือกได้มากกว่าหนึ่งประเภท)"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาเลือกประเภทของร้านซ่อมของคุณ!",
+                      },
+                    ]}
+                  >
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      style={{ width: "100%" }}
+                      placeholder="Please select"
+                    >
+                      <Option value="ศูนย์บริการรถยนต์">
+                        ศูนย์บริการรถยนต์
+                      </Option>
+                      <Option value="อู่ซ่อมรถยนต์">อู่ซ่อมรถยนต์</Option>
+                      <Option value="ศูนย์บริการรถจักรยานยนต์">
+                        ศูนย์บริการรถจักรยานยนต์
+                      </Option>
+                      <Option value="อู่ซ่อมรถจักรยานยนต์">
+                        อู่ซ่อมรถจักรยานยนต์
+                      </Option>
+                      <Option value="ร้านบริการซ่อมอุปกรณ์การเกษตร">
+                        ร้านบริการซ่อมอุปกรณ์การเกษตร
+                      </Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
 
-            {/* เวลาที่ร้านเปิด */}
-            <Form.Item
-              style={{ marginTop: "20px" }}
-              label="เวลาที่ร้านเปิด"
-              rules={[
-                {
-                  // required: true,
-                  // message: "กรุณาระบุเวลาเปิด-ปิดร้านของคุณ",
-                },
-              ]}
-            >
-              <Row>
-                <TimePicker
-                  defaultOpenValue={moment("00:00:00", "HH:mm:ss")}
-                  onChange={handleOnTime}
-                />
-                <div className="div-time">ถึงเวลา</div>
+                {/* หมายเลขโทรศัพท์ */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="phone"
+                    label="หมายเลขโทรศัพท์"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาใส่หมายเลขโทรศัพท์ของคุณ!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-                <TimePicker
-                  defaultOpenValue={moment("00:00:00", "HH:mm:ss")}
-                  onChange={handleOffTime}
-                />
+                {/* เวลาที่ร้านเปิด */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    style={{ marginTop: "20px" }}
+                    label="เวลาที่ร้านเปิด-ปิด"
+                    rules={[
+                      {
+                        // required: true,
+                        // message: "กรุณาระบุเวลาเปิด-ปิดร้านของคุณ",
+                      },
+                    ]}
+                  >
+                    <Row>
+                      <Col span={11}>
+                        <TimePicker
+                          defaultOpenValue={moment("00:00:00", "HH:mm:ss")}
+                          onChange={handleOnTime}
+                        />
+                      </Col>
+                      <Col span={2}>-</Col>
+                      <Col span={11}>
+                        <TimePicker
+                          defaultOpenValue={moment("00:00:00", "HH:mm:ss")}
+                          onChange={handleOffTime}
+                        />
+                      </Col>
+                    </Row>
+                  </Form.Item>
+                </Col>
               </Row>
-            </Form.Item>
+            </div>
 
             <Divider orientation="left">
-              <b>ที่อยู่ของร้าน</b>
+              <Title level={4}>รายละเอียดที่อยู่ของร้าน</Title>
             </Divider>
 
-            <Row>
-              {/* Addess Number บ้านเลขที่*/}
-              <Form.Item
-                name="addressnumber"
-                label="ตั้งอยู่เลขที่"
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณาระที่อยู่ให้ครบ!",
-                    whitespace: true,
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
+            <div style={{ padding: "2% 10% 2% 10%" }}>
+              <Row gutter={[0, 16]}>
+                {/* Addess Number บ้านเลขที่*/}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="addressnumber"
+                    label="ตั้งอยู่เลขที่"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระที่อยู่ให้ครบ!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-              {/* หมู่ที่ */}
-              <Form.Item
-                name="moo"
-                label="หมู่ที่"
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณาระที่อยู่ให้ครบ!",
-                    whitespace: true,
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Row>
+                {/* หมู่ที่ */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="moo"
+                    label="หมู่ที่"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระที่อยู่ให้ครบ!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-            <Row>
-              {/* ตรอก/ซอย */}
-              <Form.Item
-                name="alley"
-                label="ตรอก/ซอย"
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณาระที่อยู่ให้ครบ!",
-                    whitespace: true,
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
+                {/* ตรอก/ซอย */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="alley"
+                    label="ตรอก/ซอย"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระที่อยู่ให้ครบ!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-              {/* ถนน */}
-              <Form.Item
-                name="road"
-                label="ถนน"
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณาระที่อยู่ให้ครบ!",
-                    whitespace: true,
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Row>
+                {/* ถนน */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="road"
+                    label="ถนน"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระที่อยู่ให้ครบ!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-            {/* ตำบล/แขวง */}
-            <Form.Item
-              name="subdistrict"
-              label="ตำบล/แขวง"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาระที่อยู่ให้ครบ!",
-                  whitespace: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+                {/* ตำบล/แขวง */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="subdistrict"
+                    label="ตำบล/แขวง"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระที่อยู่ให้ครบ!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-            {/* อำเภอ/เขต */}
-            <Form.Item
-              name="district"
-              label="อำเภอ/เขต"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาระที่อยู่ให้ครบ!",
-                  whitespace: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+                {/* อำเภอ/เขต */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="district"
+                    label="อำเภอ/เขต"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระที่อยู่ให้ครบ!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-            {/* จังหวัด */}
-            <Form.Item
-              name="province"
-              label="จังหวัด"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาระที่อยู่ให้ครบ!",
-                  whitespace: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+                {/* จังหวัด */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="province"
+                    label="จังหวัด"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระที่อยู่ให้ครบ!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
-            {/* รหัสไปรษณีย์ */}
-            <Form.Item
-              name="poscode"
-              label="รหัสไปรษณีย์"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณาระที่อยู่ให้ครบ!",
-                  whitespace: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+                {/* รหัสไปรษณีย์ */}
+                <Col
+                  xs={24}
+                  md={{ span: 11, offset: 1 }}
+                  lg={{ span: 11, offset: 1 }}
+                >
+                  <Form.Item
+                    name="poscode"
+                    label="รหัสไปรษณีย์"
+                    rules={[
+                      {
+                        required: true,
+                        message: "กรุณาระที่อยู่ให้ครบ!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
 
             <Divider orientation="left">
-              <b>กรุณาปักหมุดที่อยู่ของร้าน</b>
+              <Title level={4}>ปรักหมุดที่อยู่ของร้าน</Title>
             </Divider>
 
-            {/* ปักหมุดแผนที่ */}
-            <Col md={24} span={24}>
-              <MapWithAMarker
-                googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKBdBAnDzrOkcfHq9InQFfYM7Inig-Zeg&v=3.exp&libraries=geometry,drawing,places"
-                loadingElement={<div style={{ height: "100%" }} />}
-                containerElement={<div style={{ height: "300px" }} />}
-                mapElement={<div style={{ height: "100%" }} />}
-              />
+            <div style={{ padding: "2% 10% 2% 10%" }}>
+              <Row gutter={[0, 16]}>
+                <Col xs={24} lg={{ span: 16, offset: 1 }}>
+                  <MapWithAMarker
+                    googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKBdBAnDzrOkcfHq9InQFfYM7Inig-Zeg&v=3.exp&libraries=geometry,drawing,places"
+                    loadingElement={<div style={{ height: "100%" }} />}
+                    containerElement={<div style={{ height: "450px" }} />}
+                    mapElement={<div style={{ height: "100%" }} />}
+                  />
+                </Col>
+              </Row>
+            </div>
+            <Col span={24}>
+              <Form.Item >
+                <Button
+                  className="bt-them"
+                  htmlType="submit"
+                  style={{ marginTop: "30px" }}
+                >
+                  ยืนยันการสมัคร
+                </Button>
+              </Form.Item>
             </Col>
-
-            <Form.Item {...tailFormItemLayout}>
-              <Button
-                className="bt-them"
-                htmlType="submit"
-                style={{ marginTop: "30px" }}
-              >
-                ยืนยันการสมัคร
-              </Button>
-            </Form.Item>
           </Form>
         </Col>
-        <Col
-          span={6}
-          xs={{ order: 1 }}
-          sm={{ order: 2 }}
-          md={{ order: 3 }}
-          lg={{ order: 4 }}
-        ></Col>
       </Row>
-    </div>
+    </>
+    // <div className="h-auto">
+    //   <Row>
+    //     <Col
+    //       span={4}
+    //       xs={{ order: 1 }}
+    //       sm={{ order: 2 }}
+    //       md={{ order: 3 }}
+    //       lg={{ order: 4 }}
+    //     ></Col>
+    //     <Col
+    //       // style={{ textAlign: "center" }}
+    //       span={12}
+    //       xs={{ order: 1 }}
+    //       sm={{ order: 2 }}
+    //       md={{ order: 3 }}
+    //       lg={{ order: 4 }}
+    //     >
+    //       <div className="title">ลงทะเบียนร้านซ่อม</div>
+    //       <Divider orientation="left">
+    //         <b>รายละเอียดของร้าน</b>
+    //       </Divider>
+    //       <Form
+    //         {...formItemLayout}
+    //         form={form}
+    //         name="register"
+    //         onFinish={onFinish}
+    //         scrollToFirstError
+    //       >
+    //         {/* User ID */}
+    //         <Form.Item
+    //           name="userID"
+    //           label="User ID"
+    //           tooltip="User ID เพื่อใช้ในการเข้าระบบในครั้งต่อไป"
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณาระบุ userID ของคุณ",
+    //             },
+    //           ]}
+    //         >
+    //           <Input />
+    //         </Form.Item>
+
+    //         {/* Password  รหัสผ่าน*/}
+    //         <Form.Item
+    //           name="password"
+    //           label="รหัสผ่าน"
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณาใส่รหัสผ่านของคุณ!",
+    //             },
+    //           ]}
+    //           hasFeedback
+    //         >
+    //           <Input.Password minLength={6} />
+    //         </Form.Item>
+    //         {/* confirm Password  ยืนยันรหัสผ่าน */}
+    //         <Form.Item
+    //           name="confirm"
+    //           label="ยืนยันรหัสผ่าน"
+    //           dependencies={["password"]}
+    //           hasFeedback
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณายืนยันรหัสผ่านของคุณ!",
+    //             },
+    //             ({ getFieldValue }) => ({
+    //               validator(_, value) {
+    //                 if (!value || getFieldValue("password") === value) {
+    //                   return Promise.resolve();
+    //                 }
+
+    //                 return Promise.reject(
+    //                   new Error("รหัสผ่านทั้งสองที่คุณป้อนไม่ตรงกัน!")
+    //                 );
+    //               },
+    //             }),
+    //           ]}
+    //         >
+    //           <Input.Password minLength={6} />
+    //         </Form.Item>
+
+    //         {/* User Name  ชื่อ-นามสกุล */}
+    //         <Form.Item
+    //           name="username"
+    //           label="ชื่อ-นามสกุล"
+    //           tooltip="ชื่อเจ้าของร้าน หรือผู้ที่ได้รับผิดชอบ"
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณาระบุ ชื่อ-นามสกุล ของคุณ!",
+    //               whitespace: true,
+    //             },
+    //           ]}
+    //         >
+    //           <Input />
+    //         </Form.Item>
+
+    //         {/* Garage Name ชื่อร้านซ่อม */}
+    //         <Form.Item
+    //           name="garagename"
+    //           label="ชื่อร้านซ่อม"
+    //           tooltip="ชื่อร้านซ่อม หรืออู่ซ่อมรถ"
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณาระบุ ชื่อร้านซ่อม หรืออู่ซ่อมรถ ของคุณ!",
+    //               whitespace: true,
+    //             },
+    //           ]}
+    //         >
+    //           <Input />
+    //         </Form.Item>
+
+    //         {/* Gmail */}
+    //         <Form.Item
+    //           name="email"
+    //           label="E-mail"
+    //           rules={[
+    //             {
+    //               type: "email",
+    //               message: "ข้อมูลที่ป้อนไม่ถูกต้อง ตามรูปแบบ E-mail!",
+    //             },
+    //             {
+    //               required: true,
+    //               message: "กรุณาใส่อีเมลของคุณ!",
+    //             },
+    //           ]}
+    //         >
+    //           <Input />
+    //         </Form.Item>
+
+    //         {/* Garage type ประเภทของร้านซ่อม */}
+    //         <Form.Item
+    //           name="garagetype"
+    //           label="ประเภทของร้านซ่อม"
+    //           tooltip="เลือกประเภทของร้านซ่อม (สามารถเลือกได้มากกว่าหนึ่งประเภท)"
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณาเลือกประเภทของร้านซ่อมของคุณ!",
+    //             },
+    //           ]}
+    //         >
+    //           <Select
+    //             mode="multiple"
+    //             allowClear
+    //             style={{ width: "100%" }}
+    //             placeholder="Please select"
+    //           >
+    //             <Option value="ศูนย์บริการรถยนต์">ศูนย์บริการรถยนต์</Option>
+    //             <Option value="อู่ซ่อมรถยนต์">อู่ซ่อมรถยนต์</Option>
+    //             <Option value="ศูนย์บริการรถจักรยานยนต์">
+    //               ศูนย์บริการรถจักรยานยนต์
+    //             </Option>
+    //             <Option value="อู่ซ่อมรถจักรยานยนต์">
+    //               อู่ซ่อมรถจักรยานยนต์
+    //             </Option>
+    //             <Option value="ร้านบริการซ่อมอุปกรณ์การเกษตร">
+    //               ร้านบริการซ่อมอุปกรณ์การเกษตร
+    //             </Option>
+    //           </Select>
+    //         </Form.Item>
+
+    //         {/* หมายเลขโทรศัพท์ */}
+    //         <Form.Item
+    //           style={{ marginTop: "20px" }}
+    //           name="phone"
+    //           label="หมายเลขโทรศัพท์"
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณาใส่หมายเลขโทรศัพท์ของคุณ!",
+    //             },
+    //           ]}
+    //         >
+    //           <Input />
+    //         </Form.Item>
+
+    //         {/* เวลาที่ร้านเปิด */}
+    //         <Form.Item
+    //           style={{ marginTop: "20px" }}
+    //           label="เวลาที่ร้านเปิด"
+    //           rules={[
+    //             {
+    //               // required: true,
+    //               // message: "กรุณาระบุเวลาเปิด-ปิดร้านของคุณ",
+    //             },
+    //           ]}
+    //         >
+    //           <Row>
+    //             <TimePicker
+    //               defaultOpenValue={moment("00:00:00", "HH:mm:ss")}
+    //               onChange={handleOnTime}
+    //             />
+    //             <div className="div-time">ถึงเวลา</div>
+
+    //             <TimePicker
+    //               defaultOpenValue={moment("00:00:00", "HH:mm:ss")}
+    //               onChange={handleOffTime}
+    //             />
+    //           </Row>
+    //         </Form.Item>
+
+    //         <Divider orientation="left">
+    //           <b>ที่อยู่ของร้าน</b>
+    //         </Divider>
+
+    //         <Row>
+    //           {/* Addess Number บ้านเลขที่*/}
+    //           <Form.Item
+    //             name="addressnumber"
+    //             label="ตั้งอยู่เลขที่"
+    //             rules={[
+    //               {
+    //                 required: true,
+    //                 message: "กรุณาระที่อยู่ให้ครบ!",
+    //                 whitespace: true,
+    //               },
+    //             ]}
+    //           >
+    //             <Input />
+    //           </Form.Item>
+
+    //           {/* หมู่ที่ */}
+    //           <Form.Item
+    //             name="moo"
+    //             label="หมู่ที่"
+    //             rules={[
+    //               {
+    //                 required: true,
+    //                 message: "กรุณาระที่อยู่ให้ครบ!",
+    //                 whitespace: true,
+    //               },
+    //             ]}
+    //           >
+    //             <Input />
+    //           </Form.Item>
+    //         </Row>
+
+    //         <Row>
+    //           {/* ตรอก/ซอย */}
+    //           <Form.Item
+    //             name="alley"
+    //             label="ตรอก/ซอย"
+    //             rules={[
+    //               {
+    //                 required: true,
+    //                 message: "กรุณาระที่อยู่ให้ครบ!",
+    //                 whitespace: true,
+    //               },
+    //             ]}
+    //           >
+    //             <Input />
+    //           </Form.Item>
+
+    //           {/* ถนน */}
+    //           <Form.Item
+    //             name="road"
+    //             label="ถนน"
+    //             rules={[
+    //               {
+    //                 required: true,
+    //                 message: "กรุณาระที่อยู่ให้ครบ!",
+    //                 whitespace: true,
+    //               },
+    //             ]}
+    //           >
+    //             <Input />
+    //           </Form.Item>
+    //         </Row>
+
+    //         {/* ตำบล/แขวง */}
+    //         <Form.Item
+    //           name="subdistrict"
+    //           label="ตำบล/แขวง"
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณาระที่อยู่ให้ครบ!",
+    //               whitespace: true,
+    //             },
+    //           ]}
+    //         >
+    //           <Input />
+    //         </Form.Item>
+
+    //         {/* อำเภอ/เขต */}
+    //         <Form.Item
+    //           name="district"
+    //           label="อำเภอ/เขต"
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณาระที่อยู่ให้ครบ!",
+    //               whitespace: true,
+    //             },
+    //           ]}
+    //         >
+    //           <Input />
+    //         </Form.Item>
+
+    //         {/* จังหวัด */}
+    //         <Form.Item
+    //           name="province"
+    //           label="จังหวัด"
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณาระที่อยู่ให้ครบ!",
+    //               whitespace: true,
+    //             },
+    //           ]}
+    //         >
+    //           <Input />
+    //         </Form.Item>
+
+    //         {/* รหัสไปรษณีย์ */}
+    //         <Form.Item
+    //           name="poscode"
+    //           label="รหัสไปรษณีย์"
+    //           rules={[
+    //             {
+    //               required: true,
+    //               message: "กรุณาระที่อยู่ให้ครบ!",
+    //               whitespace: true,
+    //             },
+    //           ]}
+    //         >
+    //           <Input />
+    //         </Form.Item>
+
+    //         <Divider orientation="left">
+    //           <b>กรุณาปักหมุดที่อยู่ของร้าน</b>
+    //         </Divider>
+
+    //         {/* ปักหมุดแผนที่ */}
+    //         <Col md={24} span={24}>
+    //           <MapWithAMarker
+    //             googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKBdBAnDzrOkcfHq9InQFfYM7Inig-Zeg&v=3.exp&libraries=geometry,drawing,places"
+    //             loadingElement={<div style={{ height: "100%" }} />}
+    //             containerElement={<div style={{ height: "300px" }} />}
+    //             mapElement={<div style={{ height: "100%" }} />}
+    //           />
+    //         </Col>
+
+    //         <Form.Item {...tailFormItemLayout}>
+    //           <Button
+    //             className="bt-them"
+    //             htmlType="submit"
+    //             style={{ marginTop: "30px" }}
+    //           >
+    //             ยืนยันการสมัคร
+    //           </Button>
+    //         </Form.Item>
+    //       </Form>
+    //     </Col>
+    //     <Col
+    //       span={6}
+    //       xs={{ order: 1 }}
+    //       sm={{ order: 2 }}
+    //       md={{ order: 3 }}
+    //       lg={{ order: 4 }}
+    //     ></Col>
+    //   </Row>
+    // </div>
   );
 }

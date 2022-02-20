@@ -99,13 +99,15 @@ export default function App() {
                         setCheckBox(e.target.checked);
                       }}
                     >
-                      ฉันได้อ่านข้อกำหนดและเงื่อนไขในการให้บริการแล้วและยอมรับข้อกำหนดและเงื่อนไขทุกประการ
+                      <Text>
+                        ฉันได้อ่านข้อกำหนดและเงื่อนไขในการให้บริการแล้ว
+                        และยอมรับข้อกำหนดและเงื่อนไขทุกการ
+                      </Text>
                     </Checkbox>
                   </Form.Item>
                 </Form>
               </div>
               <div className="div-button-submit">
-               
                 <Button className="bt-them" onClick={handleSubmit}>
                   ยืนยัน
                 </Button>

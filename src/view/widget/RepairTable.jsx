@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from "react";
+import Highlighter from "react-highlight-words";
 
-import { Table, Space, Typography } from "antd";
+import { Table, Space, Typography, Row, Col, Input, Button } from "antd";
 import { Link } from "react-router-dom";
+
+import { SearchOutlined } from "@ant-design/icons";
 
 // Import services
 import { FetctDetailByGarage } from "../../services";
 
-const { Column, ColumnGroup } = Table;
-const { Text } = Typography;
+// const { Column, ColumnGroup } = Table;
+const { Text, Title } = Typography;
 
 export default function App() {
   const [datas, setDatas] = useState([]);
+
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
 
   useEffect(() => {
     const getDetailByGarage = async () => {
       let local = {
         garageID: JSON.parse(localStorage.getItem("user")).userData.userId,
       };
-      // console.log("local", local);
-      // console.log(local);
       await FetctDetailByGarage(local).then(async (response) => {
         await setDatas(response.data);
       });
@@ -26,87 +30,201 @@ export default function App() {
     getDetailByGarage();
   }, []);
 
-  // console.log("datas", datas);
+  // console.log('datas' , datas)
 
-  // const clickMore = (key) => {
-  //   console.log("key", key);
-  // };
+  ///test
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={(node) => {
+            // searchInput = node;
+          }}
+          placeholder={`ค้นหา`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            ค้นหา
+          </Button>
+          <Button
+            onClick={() => handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            ล้าง
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ? record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        : "",
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        // setTimeout(() => searchInput.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+    // this.setState({
+    //   searchText: selectedKeys[0],
+    //   searchedColumn: dataIndex,
+    // });
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    // this.setState({ searchText: "" });
+    setSearchText("");
+  };
+
+  const columns = [
+    {
+      title: "ชื่อลูกค้า",
+      dataIndex: "member_name",
+      key: "member_name",
+      ...getColumnSearchProps("member_name"),
+    },
+    {
+      title: "รหัสลูกค้า",
+      dataIndex: "member_tel",
+      key: "member_tel",
+      ...getColumnSearchProps("member_tel"),
+    },
+    {
+      title: "ประเภทการซ่อม",
+      dataIndex: "device_type",
+      key: "device_type",
+      ...getColumnSearchProps("device_type"),
+    },
+    {
+      title: "ทะเบียน/ชนิด",
+      key: "detailsID",
+      ...getColumnSearchProps("car_number"),
+      render: (record) => {
+        return (
+          <>
+            {record.device_type === "รถจักรยานยนต์" ||
+                  record.device_type === "รถยนต์" ? (
+                    <>
+                      <Space size="small">
+                        <Text style={{ fontWeight: "bold" }}>
+                          {record.car_number}
+                        </Text>
+                      </Space>
+                      {<br />}
+                      <Text>{record.car_province}</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text>{record.equipment}</Text>
+                    </>
+                  )}
+          </>
+        );
+      },
+      
+    },
+    {
+      title: "รายละเอียดการซ่อมเบื้องต้น",
+      dataIndex: "repair_details",
+      key: "repair_details",
+    },
+    {
+      title: "วันที่รับซ่อม",
+      dataIndex: "repair_date",
+      key: "repair_date",
+      ...getColumnSearchProps("repair_date"),
+    },
+    {
+      title: "สถานะ",
+      dataIndex: "status",
+      key: "status",
+      ...getColumnSearchProps("status"),
+    },
+    {
+      title: "เพิ่มเติม",
+      key: "detailsID",
+      render: (record) => {
+        return (
+          <>
+           <Link
+                    to={{
+                      pathname: "/dashboard/all-repair/detail",
+                      state: {
+                        detailsID: record.detailsID,
+                        memberTel: record.member_tel,
+                      },
+                    }}
+                  >
+                    <Text style={{ color: "blue" }}>
+                      {/* <ToolOutlined style={{fontSize: "200%"}} /> */}
+                      จัดการงานซ่อม
+                    </Text>
+                  </Link>
+          </>
+        );
+      },
+    },
+  ];
+  ////
 
   return (
     <>
-      <Table dataSource={datas} scroll={{ x: 1000, y: 400 }}>
-        <ColumnGroup title="ลูกค้า">
-          <Column
-            title="ชื่อลูกค้า"
-            dataIndex="member_name"
-            key="member_name"
-          />
-          <Column title="รหัสลูกค้า" dataIndex="member_tel" key="member_tel" />
-        </ColumnGroup>
+      <Row>
+        <Col span={24} style={{ marginTop: "3%" }}>
+          <Title level={3}>งานซ่อมทั้งหมดที่มี</Title>
+        </Col>
+      </Row>
 
-        <ColumnGroup title="รายละเอียด">
-          <Column
-            title="ประเภทการซ่อม"
-            dataIndex="device_type"
-            key="device_type"
-          />
-
-          <Column
-            title="ทะเบียน/ชนิด"
-            key="detailsID"
-            render={(text, record) => (
-              <>
-                {record.device_type === "รถจักรยานยนต์" ||
-                record.device_type === "รถยนต์" ? (
-                  <>
-                    <Space size="small">
-                      <Text style={{ fontWeight: "bold" }}>
-                        {record.car_number}
-                      </Text>
-                    </Space>
-                    {<br />}
-                    <Text>{record.car_province}</Text>
-                  </>
-                ) : (
-                  <>
-                    <Text>
-                      {record.equipment}
-                    </Text>
-                  </>
-                )}
-              </>
-            )}
-          />
-
-          <Column
-            title="รายละเอียดการซ่อมเบื้องต้น"
-            dataIndex="repair_details"
-            key="repair_details"
-          />
-          <Column
-            title="วันที่รับซ่อม"
-            dataIndex="repair_date"
-            key="repair_date"
-          />
-          <Column title="สถานะ" dataIndex="status" key="status" />
-          <Column
-            title="เพิ่มเติม"
-            key="detailsID"
-            render={(text, record) => (
-              <Space size="middle">
-                <Link
-                  to={{
-                    pathname: "/dashboard/all-repair/detail",
-                    state: { detailsID: record.detailsID },
-                  }}
-                >
-                  <Text style={{ color: "blue" }}>จัดการ</Text>
-                </Link>
-              </Space>
-            )}
-          />
-        </ColumnGroup>
-      </Table>
+      <div className="div-p-5">
+        <Table
+          scroll={{ x: 500 }}
+          bordered
+          columns={columns}
+          dataSource={datas}
+        />
+      </div>
     </>
   );
 }

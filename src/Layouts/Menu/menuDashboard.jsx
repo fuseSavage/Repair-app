@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Layout, Menu } from "antd";
+import { Col,  Layout, Menu, Row, Typography, Avatar } from "antd";
 import {
   HomeOutlined,
   AppstoreAddOutlined,
   ToolOutlined,
-  UnorderedListOutlined,
   OrderedListOutlined,
   UserAddOutlined,
   TeamOutlined,
@@ -13,7 +12,7 @@ import {
   CommentOutlined,
   SettingOutlined,
   LogoutOutlined,
-  DollarOutlined,
+  // DollarOutlined,
 } from "@ant-design/icons";
 
 // import services
@@ -21,9 +20,12 @@ import { sendLogout } from "../../services";
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
+const { Title } = Typography;
 
 export default function App() {
   const [collapsed, setCollapsed] = useState(false);
+
+  let garageName = JSON.parse(localStorage.getItem("user")).userData.garageName;
 
   const onCollapse = (collapsed) => {
     setCollapsed(collapsed);
@@ -46,12 +48,30 @@ export default function App() {
           overflowY: "scroll",
         }}
       >
+        {/* <Divider /> */}
+       
+        {/* <Divider /> */}
+
         <Sider
           theme="dark"
           collapsible
           collapsed={collapsed}
           onCollapse={onCollapse}
         >
+           <Row className="display-flex-center">
+          <Col>
+            <Title level={5} style={{color: "#ffbf00"}}>
+              <Avatar
+                style={{ backgroundColor: "#ffbf00", verticalAlign: "middle" }}
+                size="large"
+                gap={"gap"}
+              >
+                {garageName}
+              </Avatar> &nbsp;
+              {garageName}
+            </Title>
+          </Col>
+        </Row>
           <Menu
             theme="dark"
             defaultSelectedKeys={["1"]}
@@ -62,20 +82,16 @@ export default function App() {
               <Link to={"/dashboard"}>หน้าแรก</Link>
             </Menu.Item>
 
-            <SubMenu
-              key="sub1"
-              icon={<UnorderedListOutlined />}
-              title="จัดการงานซ่อม"
-            >
-              <Menu.Item key="2" icon={<OrderedListOutlined />}>
-                <Link to={"/dashboard/all-repair"}>รายการซ่อม</Link>
-              </Menu.Item>
+            <SubMenu key="sub1" icon={<ToolOutlined />} title="จัดการงานซ่อม">
               <Menu.Item key="3" icon={<AppstoreAddOutlined />}>
                 <Link to={"/dashboard/add-detail"}>เพิ่มการซ่อม</Link>
               </Menu.Item>
-              <Menu.Item key="4" icon={<ToolOutlined />}>
-                <Link to={"/dashboard/status"}>สถานะการซ่อม</Link>
+              <Menu.Item key="2" icon={<OrderedListOutlined />}>
+                <Link to={"/dashboard/all-repair"}>งานซ่อมทั้งหมด</Link>
               </Menu.Item>
+              {/* <Menu.Item key="4" icon={<ToolOutlined />}>
+                <Link to={"/dashboard/status"}>สถานะการซ่อม</Link>
+              </Menu.Item> */}
             </SubMenu>
 
             <SubMenu key="sub2" icon={<TeamOutlined />} title="จัดการลูกค้า">
@@ -86,20 +102,20 @@ export default function App() {
                 <Link to={"/dashboard/search-repair"}>ค้นหาการซ่อม</Link>
               </Menu.Item>
               <Menu.Item key="7" icon={<TeamOutlined />}>
-                <Link to={"/dashboard/search-member"}>ลูกค้าของฉัน</Link>
+                <Link to={"/dashboard/member"}>ลูกค้าของฉัน</Link>
               </Menu.Item>
             </SubMenu>
-
+{/* 
             <Menu.Item key="10" icon={<DollarOutlined />}>
               <Link to={"/dashboard/payment"}>การชำระเงิน</Link>
-            </Menu.Item>
+            </Menu.Item> */}
 
             <Menu.Item key="8" icon={<SettingOutlined />}>
               <Link to={"/dashboard/setting"}>ตั้งค่าบัญชี</Link>
             </Menu.Item>
 
             <Menu.Item key="9" icon={<CommentOutlined />}>
-              <Link to={"/dashboard/reported"}>แจ้งปัญหาการใช้งาน</Link>
+              <Link to={"/reported"}>แจ้งปัญหาการใช้งาน</Link>
             </Menu.Item>
 
             <Menu.Item

@@ -19,13 +19,14 @@ export default function ShowDetail() {
   //use State
 
   const detailID = location.state;
-  //   console.log(detailID);
+  const memberTel = location.state;
+    // console.log(detailID, memberTel.memberTel);
 
   return (
     <>
       <TitleShowDetail detailID={detailID.detailsID} />
       {/* Show Repair id = {detailID.detailsID} */}
-      <SpareAdd detailID={detailID.detailsID} />
+      <SpareAdd detailID={detailID.detailsID} memberTel={memberTel.memberTel} />
     </>
   );
 }

@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
 
-import { Col, Divider, Row, Typography } from "antd";
-import { MobileOutlined, DollarOutlined } from "@ant-design/icons";
+import { Col, Row, Typography, Table, Divider } from "antd";
+import { MobileOutlined } from "@ant-design/icons";
+
+import { useLocation } from "react-router-dom";
 
 // import Service
-import { FetctDetailByGarageID } from "../../../services";
+import { FetctDetailByGarageID, FetchSpareByDetailID } from "../../../services";
 
 // import { useLocation } from "react-router-dom";
 
 const { Text, Title } = Typography;
+const { Column, ColumnGroup } = Table;
 
-export default function App(props) {
-  const detailID = props;
+export default function App() {
+  let location = useLocation();
+  //   const detailID = props;
+
+  const detailID = location.state;
 
   //set useState
   const [datas, setDatas] = useState([]);
+  const [dataSpare, setDataSpare] = useState([]);
 
   useEffect(() => {
     const getDetailByGarage = async () => {
@@ -22,11 +29,35 @@ export default function App(props) {
         await setDatas(response.data[0]);
         // console.log('data', response.data[0])
       });
+      await FetchSpareByDetailID(detailID).then((response) => {
+        if (response.data) {
+          setDataSpare(response.data);
+        }
+      });
     };
     getDetailByGarage();
   }, [detailID]);
 
-  // console.log(datas);
+  let listData = [];
+  if (dataSpare.length !== 0) {
+    for (let i = 0; i < dataSpare.length; i++) {
+      let toarr = JSON.parse(dataSpare[i].spare);
+      // console.log("toarr", toarr);
+      let newData = {
+        spareID: dataSpare[i].spareID,
+        spareName: toarr.spareName,
+        qty: toarr.qty,
+        qtyPrice: toarr.qtyPrice,
+        sumPrice: toarr.sumPrice,
+      };
+
+      listData.push(newData);
+    }
+  }
+
+  // console.log('dataspare',dataSpare);
+
+  // console.log('spare',listData);
 
   return (
     <>
@@ -54,10 +85,7 @@ export default function App(props) {
 
           <Col xs={24} md={{ span: 11, offset: 1 }} lg={{ span: 7, offset: 1 }}>
             <Text className="color-bfbf">ทะเบียน / ชนิด</Text>
-            {/* <Title level={4} className="color-fff">
-              <Text className="color-fff">{datas.car_number}</Text>
-            </Title>
-            <Text className="color-fff">{datas.car_province}</Text> */}
+
             {datas.device_type === "รถจักรยานยนต์" ||
             datas.device_type === "รถยนต์" ? (
               <>
@@ -87,6 +115,13 @@ export default function App(props) {
           </Col>
 
           <Col xs={24} md={{ span: 11, offset: 1 }} lg={{ span: 7, offset: 1 }}>
+            <Text className="color-bfbf">ร้านที่รับซ่อม</Text>
+            <Title level={4} className="color-fff">
+              <Text className="color-fff">{datas.garage_name}</Text>
+            </Title>
+          </Col>
+
+          <Col xs={24} md={{ span: 11, offset: 1 }} lg={{ span: 7, offset: 1 }}>
             <Text className="color-bfbf">วันที่รับซ่อม</Text>
             <Title level={4} className="color-fff">
               <Text className="color-fff">{datas.repair_date}</Text>
@@ -99,26 +134,55 @@ export default function App(props) {
               <Text className="color-fff">{datas.status}</Text>
             </Title>
           </Col>
-
-          <Col xs={24} md={{ span: 11, offset: 1 }} lg={{ span: 7, offset: 1 }}>
-            <Text className="color-bfbf">ยอดสุทธิ(บ.)</Text>
-            <Title level={4} className="color-fff">
-              <Text className="color-fff">{datas.price}</Text>
-            </Title>
-            <Text className="color-fff">
-              <DollarOutlined /> {datas.status_payment}
-            </Text>
-          </Col>
         </Row>
       </div>
-      <Divider />
+
       <div>
+        <Divider />
         <Row>
           <Col span={24}>
             <Title level={4}>รายละเอียดการซ่อมเบื้องต้น</Title>
             <Text>{datas.repair_details}</Text>
           </Col>
         </Row>
+      </div>
+
+      <div className="div-p-5">
+        <Table
+          dataSource={listData}
+          scroll={{ x: 400 }}
+          bordered
+          className="border"
+        >
+          <ColumnGroup title="รายละเอียดการซ่อม">
+            <Column
+              title="ลำดับ"
+              width={"10%"}
+              render={(value, item, index) => index + 1}
+            />
+            <Column
+              title="รายการซ่อม / อะไหล่"
+              dataIndex="spareName"
+              key="spareName"
+              width={"48%"}
+            />
+
+            <Column title="จำนวน" dataIndex="qty" key="qty" width={"10%"} />
+
+            <Column
+              title="ราคาต่อหน่วย"
+              dataIndex="qtyPrice"
+              key="qtyPrice"
+              width={"12%"}
+            />
+            <Column
+              title="ราคารวม"
+              dataIndex="sumPrice"
+              key="sumPrice"
+              width={"10%"}
+            />
+          </ColumnGroup>
+        </Table>
       </div>
     </>
   );

@@ -37,8 +37,8 @@ export default function App() {
   return (
     <>
       <Row>
-        <Col span={24} className="box-text-title">
-          <Title level={4}>เพิ่มการซ่อม</Title>
+        <Col span={24} style={{padding: '5%'}}>
+          <Title level={3}>เพิ่มการซ่อม</Title>
         </Col>
 
         <Col span={24}>
@@ -73,7 +73,7 @@ export default function App() {
                 ></Col>
               </Row>
             </Col>
-            <div style={{display: 'flex', marginTop: '10px'}}>
+            <div style={{ display: "flex", marginTop: "10px" }}>
               <Title style={{ color: "red" }} level={5}>
                 หมายเหตุ : &nbsp;
               </Title>

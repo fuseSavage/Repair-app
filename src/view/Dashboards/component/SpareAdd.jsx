@@ -1,158 +1,414 @@
 import React, { useState, useEffect } from "react";
 
 import {
-//   Row,
-//   Col,
   Modal,
   Button,
   Input,
   Divider,
   Table,
   Typography,
+  Row,
+  Col,
+  Space,
+  Select,
+  // Popconfirm
 } from "antd";
 
-import { PlusCircleFilled } from "@ant-design/icons";
+import {
+  PlusCircleFilled,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+  OrderedListOutlined,
+  SaveOutlined,
+} from "@ant-design/icons";
 
 // import Service
-import { FetctDetailByGarageID } from '../../../services'
+import {
+  FetchSpareByDetailID,
+  InsertSpare,
+  DeleteSpare,
+  UpdateDetail,
+} from "../../../services";
 
 const { Column, ColumnGroup } = Table;
-const { Text } = Typography;
-
-// const data = [
-// //   {
-// //     key: "1",
-// //     name: "ยางใน",
-// //     age: 32,
-// //     address: "New York No. 1 Lake Park",
-// //     tags: ["nice", "developer"],
-// //   },
-// //   {
-// //     key: "2",
-// //     name: "น้ำมันเครื่อง",
-// //     age: 42,
-// //     address: "London No. 1 Lake Park",
-// //     tags: ["loser"],
-// //   },
-// //   {
-// //     key: "3",
-// //     name: "test",
-// //     age: 32,
-// //     address: "Sidney No. 1 Lake Park",
-// //     tags: ["cool", "teacher"],
-// //   },
-// ];
+const { Text, Title } = Typography;
+const { confirm } = Modal;
+const { Option } = Select;
 
 export default function SpareAdd(props) {
-  const detailID = props;
-//   console.log(detailID);
+  const {detailID, memberTel} = props;
+  // console.log(memberTel, detailID)
 
   // Set State
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [ datas, setDatas  ] = useState([])
-  // const [modalText, setModalText] = useState("Content of the modal");
+  const [datas, setDatas] = useState([]);
+  const [status, setStatus] = useState('อยู่ระหว่างการซ่อม');
+  const [payment, setPayment] = useState('ยังไม่ได้ชำระ');
+
+  // state spare
+  const [spareName, setSpareName] = useState();
+  const [qty, setQTY] = useState();
+  const [qtyPrice, setQTYPrice] = useState();
+  const [sumPrice, setSumPrice] = useState(0);
 
   useEffect(() => {
-    const getDetailByGarage = async () => {
-
-      await FetctDetailByGarageID(detailID).then(async (response) => {
-        await setDatas(response.data);
-        // console.log('data', response.data)
+    const getSpare = async () => {
+      let data = {
+        detailID: detailID
+      }
+      await FetchSpareByDetailID(data).then((response) => {
+        if (response.data) {
+          setDatas(response.data);
+        }
       });
+      setSumPrice(qty * qtyPrice);
     };
-    getDetailByGarage();
-  }, [detailID]);
-
+    getSpare();
+  }, [detailID, qty, qtyPrice]);
 
   const showModal = () => {
     setVisible(true);
   };
 
+  let listData = [];
+  let sum = 0;
+  if (datas.length !== 0) {
+    for (let i = 0; i < datas.length; i++) {
+      let toarr = JSON.parse(datas[i].spare);
+      sum = sum + toarr.sumPrice;
+      let newData = {
+        spareID: datas[i].spareID,
+        spareName: toarr.spareName,
+        qty: toarr.qty,
+        qtyPrice: toarr.qtyPrice,
+        sumPrice: toarr.sumPrice,
+      };
+
+      listData.push(newData);
+    }
+  }
+
+  // console.log(listData);
+
   const handleOk = () => {
+    let listSpare = {
+      spareName: spareName,
+      qty: qty,
+      qtyPrice: qtyPrice,
+      sumPrice: sumPrice,
+    };
+
+    // let sum = 0;
+    // sum = sum +
+
+    const data = {
+      detailsID: detailID,
+      memberTel: memberTel,
+      spare: JSON.stringify(listSpare),
+    };
+
+    // console.log('data', data)
+
+    if (spareName === "" || spareName === null || spareName === undefined) {
+      Modal.info({
+        title: "ข้อมูลไม่ครบ",
+        content: `กรุณากรอกรายการการซ่อม`,
+      });
+    } else {
+      InsertSpare(data);
+    }
+
     // setModalText("The modal will be closed after two seconds");
     setConfirmLoading(true);
     setTimeout(() => {
       setVisible(false);
       setConfirmLoading(false);
+
+      setSpareName(null);
+      setQTY();
+      setQTYPrice();
+      setSumPrice(0);
     }, 2000);
   };
 
   const handleCancel = () => {
-    console.log("Clicked cancel button");
+    // console.log("Clicked cancel button");
     setVisible(false);
   };
+
+  function destroyAll() {
+    Modal.destroyAll();
+  }
+
+  const handleDelete = (id) => {
+    confirm({
+      icon: <ExclamationCircleOutlined />,
+      content: <Button onClick={destroyAll}>คลิ๊ก ok เพื่อลบรายการนี้</Button>,
+      onOk() {
+        // console.log("detele", id);
+        DeleteSpare(id);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  const handleSave = () => {
+   
+    let data = {
+      status: status,
+      status_payment: payment,
+      sumPrice: sum,
+      detailsID: detailID
+    }
+    // console.log('data', data)
+    UpdateDetail(data)
+    setTimeout(() => {
+      window.location.reload(false)
+    }, 1);
+  }
 
   return (
     <>
       <Divider />
-      {/* <div className="div-p-5">
-        <Row gutter={[0, 32]}>
-          <Col xs={24} md={{ span: 11, offset: 1 }} lg={{ span: 7, offset: 1 }}>
-            test
-          </Col>
-          <Col xs={24} md={{ span: 11, offset: 1 }} lg={{ span: 7, offset: 1 }}>
-            test
-          </Col>
-          <Col xs={24} md={{ span: 11, offset: 1 }} lg={{ span: 7, offset: 1 }}>
-            test
-          </Col>
-        </Row>
-      </div> */}
 
       <div className="div-p-5">
         <Button className="bt-them" onClick={showModal}>
           <Text className="color-fff-hover">
-            <PlusCircleFilled /> เพิ่มรายการอะไหล่
+            <PlusCircleFilled /> เพิ่มรายการซ่อม
           </Text>
         </Button>
-        <Table dataSource={datas} scroll={{ x: 400 }} className="border">
+
+        <Table
+          dataSource={listData}
+          scroll={{ x: 400 }}
+          bordered
+          className="border"
+        >
           <ColumnGroup title="รายละเอียดการซ่อม">
             <Column
               title="ลำดับ"
-              dataIndex="key"
-              key="member_name"
               width={"10%"}
+              render={(value, item, index) => index + 1}
             />
             <Column
-              title="รายการอะไหล่"
-              dataIndex="name"
-              key="member_tel"
-              width={"60%"}
+              title="รายการซ่อม / อะไหล่"
+              dataIndex="spareName"
+              key="spareName"
+              width={"48%"}
             />
 
-            <Column
-              title="จำนวน"
-              dataIndex="device_type"
-              key="device_type"
-              width={"10%"}
-            />
+            <Column title="จำนวน" dataIndex="qty" key="qty" width={"10%"} />
 
             <Column
               title="ราคาต่อหน่วย"
-              dataIndex="device_type"
-              key="device_type"
-              width={"10%"}
+              dataIndex="qtyPrice"
+              key="qtyPrice"
+              width={"12%"}
             />
             <Column
-              title="ราคาประเมิน"
-              dataIndex="device_type"
-              key="device_type"
+              title="ราคารวม"
+              dataIndex="sumPrice"
+              key="sumPrice"
               width={"10%"}
+            />
+
+            <Column
+              title="ลบข้อมูล"
+              width={"10%"}
+              key="spairID"
+              render={(text, record, key) => (
+                <Space size="middle">
+                  <Button
+                    className="bt-delete"
+                    onClick={() => {
+                      handleDelete(record.spareID);
+                    }}
+                  >
+                    <DeleteOutlined />
+                  </Button>
+                </Space>
+              )}
             />
           </ColumnGroup>
         </Table>
       </div>
 
+      {/* สรุปรายการซ่อม */}
+      {listData.length !== 0 ? (
+        <div>
+          <Row gutter={[0, 16]}>
+            <Col lg={{ span: 11, offset: 1 }}>
+              <Title level={5}>
+                <Text>
+                  <OrderedListOutlined /> สรุปรายการซ่อม
+                </Text>
+              </Title>
+              <div className="border">
+                <Row style={{ marginTop: "10px" }}>
+                  <Col span={11} offset={1}>
+                    <Title level={5}>
+                      <Text>รายการ</Text>
+                    </Title>
+                  </Col>
+                  <Col span={5} offset={1}>
+                    <Title level={5}>
+                      <Text>จำนวน</Text>
+                    </Title>
+                  </Col>
+                  <Col span={5} offset={1}>
+                    <Title level={5}>
+                      <Text>ราคา</Text>
+                    </Title>
+                  </Col>
+                  {/* <Divider /> */}
+
+                  {listData.map((val) => {
+                    return (
+                      <>
+                        <Col span={11} offset={1}>
+                          {val.spareName}
+                        </Col>
+                        <Col span={5} offset={1}>
+                          {val.qty}
+                        </Col>
+                        <Col span={5} offset={1}>
+                          {val.sumPrice}
+                        </Col>
+                      </>
+                    );
+                  })}
+                  <Divider />
+                  <Col span={11} offset={1}>
+                    <Title level={5}>
+                      <Text>ยอดสุทธิ</Text>
+                    </Title>
+                  </Col>
+                  <Col span={11} offset={1}>
+                    <Title level={5}>
+                      <Text style={{ color: "red" }}>{sum} บาท</Text>
+                    </Title>
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+
+            {/* อัพเดตสถานะ Update Status */}
+            <Col xs={24} sm={24} md={24} lg={{ span: 11, offset: 1 }}>
+              <Title level={5}>
+                <Text>
+                <SaveOutlined /> อัพเดตสถานะ
+                </Text>
+              </Title>
+              <div className="border">
+                <Row style={{ marginTop: "5%" }}>
+                  <Col span={10} offset={1}>
+                    <Title level={5}>
+                      <Text>สถานะการซ่อม</Text>
+                    </Title>
+                    <div className="div-select">
+                      <Select
+                        allowClear
+                        style={{ width: "100%" }}
+                        defaultValue="อยู่ระหว่างการซ่อม"
+                        onChange={(e) => {
+                          setStatus(e);
+                          // console.log(e)
+                        }}
+                      >
+                        <Option value="อยู่ระหว่างการซ่อม">
+                          อยู่ระหว่างการซ่อม
+                        </Option>
+                        <Option value="สำเร็จ">สำเร็จ</Option>
+                      </Select>
+                    </div>
+                  </Col>
+
+                  <Col span={11} offset={1}>
+                    <Title level={5}>
+                      <Text>การชำระเงิน</Text>
+                    </Title>
+                    <div className="div-select">
+                      <Select
+                        allowClear
+                        style={{ width: "100%" }}
+                        defaultValue={{ value: 'ยังไม่ได้ชำระ' }}
+                        
+                        onChange={(e) => {
+                          setPayment(e);
+                        }}
+                      >
+                        <Option value="ยังไม่ได้ชำระ">ยังไม่ได้ชำระ</Option>
+                        <Option value="ชำระแล้ว">ชำระแล้ว</Option>
+                      </Select>
+                    </div>
+                  </Col>
+
+                  <Divider />
+
+                  <Col span={24}>
+                    <Button className="bt-them" onClick={handleSave}>
+                      <Text className="color-fff-hover">
+                        <SaveOutlined /> บันทึก
+                      </Text>
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+          </Row>
+        </div>
+      ) : null}
+
+      {/* Model Pop Up */}
       <Modal
-        title="Title"
+        title="เพิ่มรายการซ่อม / อะไหล่"
         visible={visible}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
         width={1000}
       >
-        <Input />
+        <Row>
+          <Col lg={{ span: 11, offset: 1 }}>
+            <Text>รายการ</Text>
+            <Input
+              required={true}
+              value={spareName}
+              onChange={(e) => {
+                setSpareName(e.target.value);
+              }}
+            />
+          </Col>
+          <Col lg={{ span: 3, offset: 1 }}>
+            <Text>จำนวน</Text>
+            <Input
+              required={true}
+              type="number"
+              value={qty}
+              onChange={(e) => {
+                setQTY(e.target.value);
+              }}
+            />
+          </Col>
+          <Col lg={{ span: 3, offset: 1 }}>
+            <Text>ราคาต่อหน่วย</Text>
+            <Input
+              required={true}
+              type="number"
+              value={qtyPrice}
+              onChange={(e) => {
+                setQTYPrice(e.target.value);
+              }}
+            />
+          </Col>
+          <Col lg={{ span: 3, offset: 1 }}>
+            <Text>ยอดรวม</Text>
+            <Input type="number" value={sumPrice} />
+          </Col>
+        </Row>
       </Modal>
     </>
   );
