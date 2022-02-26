@@ -18,7 +18,19 @@ export default function App() {
     if (checkLocal === null) {
       history.push("/");
     } else {
-      history.push("/dashboard");
+      if (checkLocal.userData.userId === "admin") {
+        history.push({
+          pathname: "/admin/dashboard",
+          state: checkLocal.userData.userId,
+        });
+      } else {
+        history.push({
+          pathname: "/dashboard",
+          state: checkLocal.userData.userId,
+        });
+      }
+  
+      // console.log("test", checkLocal.userData.userId);
     }
   };
   // const onclickLogin = () => {

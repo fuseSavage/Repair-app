@@ -10,7 +10,7 @@ import {
   TeamOutlined,
   FileSearchOutlined,
   CommentOutlined,
-  SettingOutlined,
+  // SettingOutlined,
   LogoutOutlined,
   // DollarOutlined,
 } from "@ant-design/icons";
@@ -110,9 +110,9 @@ export default function App() {
               <Link to={"/dashboard/payment"}>การชำระเงิน</Link>
             </Menu.Item> */}
 
-            <Menu.Item key="8" icon={<SettingOutlined />}>
+            {/* <Menu.Item key="8" icon={<SettingOutlined />}>
               <Link to={"/dashboard/setting"}>ตั้งค่าบัญชี</Link>
-            </Menu.Item>
+            </Menu.Item> */}
 
             <Menu.Item key="9" icon={<CommentOutlined />}>
               <Link to={"/reported"}>แจ้งปัญหาการใช้งาน</Link>

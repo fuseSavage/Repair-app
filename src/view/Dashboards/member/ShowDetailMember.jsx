@@ -16,8 +16,10 @@ const { Column, ColumnGroup } = Table;
 export default function App() {
   let location = useLocation();
   //   const detailID = props;
-
+ 
   const detailID = location.state;
+
+  // console.log(detailID)
 
   //set useState
   const [datas, setDatas] = useState([]);
@@ -26,8 +28,12 @@ export default function App() {
   useEffect(() => {
     const getDetailByGarage = async () => {
       await FetctDetailByGarageID(detailID).then(async (response) => {
-        await setDatas(response.data[0]);
-        // console.log('data', response.data[0])
+        if (response.data) {
+           await setDatas(response.data[0]);
+        // console.log('data', response)
+        }
+        // console.log('data', response)
+       
       });
       await FetchSpareByDetailID(detailID).then((response) => {
         if (response.data) {
@@ -147,7 +153,7 @@ export default function App() {
         </Row>
       </div>
 
-      <div className="div-p-5">
+      <div className="div-p-5" style={{padding: "2% 10% 2% 10%"}}>
         <Table
           dataSource={listData}
           scroll={{ x: 400 }}
@@ -164,23 +170,23 @@ export default function App() {
               title="รายการซ่อม / อะไหล่"
               dataIndex="spareName"
               key="spareName"
-              width={"48%"}
+              width={"50%"}
             />
 
-            <Column title="จำนวน" dataIndex="qty" key="qty" width={"10%"} />
+            <Column title="จำนวน" dataIndex="qty" key="qty" width={"20%"} />
 
-            <Column
+            {/* <Column
               title="ราคาต่อหน่วย"
               dataIndex="qtyPrice"
               key="qtyPrice"
               width={"12%"}
-            />
-            <Column
+            /> */}
+            {/* <Column
               title="ราคารวม"
               dataIndex="sumPrice"
               key="sumPrice"
               width={"10%"}
-            />
+            /> */}
           </ColumnGroup>
         </Table>
       </div>

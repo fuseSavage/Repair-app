@@ -8,6 +8,7 @@ import {
   SearchOutlined,
   FileSearchOutlined,
   CommentOutlined,
+  LoginOutlined
 } from "@ant-design/icons";
 
 import { Link } from "react-router-dom";
@@ -56,10 +57,16 @@ export default function App() {
               <Menu.Item key="6" icon={<FileSearchOutlined />}>
                 <Link to={"/status"}>เช็คสถานะการซ่อม</Link>
               </Menu.Item>
+
+              <Menu.Item key="9" icon={<CommentOutlined />}>
+              <Link to={"/reported"}>แจ้งปัญหาการใช้งาน</Link>
+            </Menu.Item>
             </SubMenu>
 
-            <Menu.Item key="9" icon={<CommentOutlined />}>
-              <Link to={"/reported"}>แจ้งปัญหาการใช้งาน</Link>
+           
+
+            <Menu.Item key="3" icon={<LoginOutlined />}>
+              <Link to={"/login"}>เข้าสู่ระบบ</Link>
             </Menu.Item>
           </Menu>
         </Sider>

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import {Typography} from 'antd'
+import { Typography } from "antd";
+
+import { Link } from "react-router-dom";
 
 import { CanvasJSChart } from "canvasjs-react-charts";
 
 // Import services
 import { FetctDetailByGarage } from "../../services";
 
-const { Title } = Typography
+const { Title } = Typography;
 
 export default function Ecommerce(props) {
   const [datas, setDatas] = useState([]);
@@ -30,7 +32,7 @@ export default function Ecommerce(props) {
   let carlist = [];
   let motolist = [];
   let agirculturelist = [];
-  let totol = []
+  let totol = [];
 
   if (datas !== null) {
     for (let i = 0; i < datas.length; i++) {
@@ -44,7 +46,7 @@ export default function Ecommerce(props) {
       if (datas[i].device_type === "อุปกรณ์การเกษตร") {
         agirculturelist.push(datas[i].device_type);
       }
-      totol.push(datas[i])
+      totol.push(datas[i]);
     }
   } else {
     // console.log('data is null', datas)
@@ -78,7 +80,9 @@ export default function Ecommerce(props) {
         options={options}
         /* onRef={ref => this.chart = ref} */
       />
-      <Title level={5}>การซ่อมทั้งหมด {totol.length} รายการ</Title>
+      <Link to={"/dashboard/all-repair"}>
+        <Title level={5}>การซ่อมทั้งหมด {totol.length} รายการ</Title>
+      </Link>
     </div>
   );
 }

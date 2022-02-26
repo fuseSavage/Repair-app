@@ -21,7 +21,7 @@ export default function Member() {
     let data = {
       userId: userId,
     };
-    const getFunction = async () => {
+    const getMember = async () => {
       await FetctMemberByGarage(data).then(async (response) => {
         if (response.code === 500) {
           console.log("data", response);
@@ -31,7 +31,7 @@ export default function Member() {
         // console.log('data', response)
       });
     };
-    getFunction();
+    getMember();
   }, [userId]);
 
   let listData = [];

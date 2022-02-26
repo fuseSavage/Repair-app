@@ -114,6 +114,23 @@ const PagesRoutes = [
       component: lazy(() => import('../../view/Dashboards/member/member')),
       layout: 'VerticalLayout',
     },
+
+
+
+    // Admin
+     {
+      path: '/admin/dashboard',
+      component: lazy(() => import('../../view/Admin/Admin')),
+      layout: 'VerticalLayout',
+    },
+     
+    // Garage
+    {
+      path: '/admin/all-garage',
+      component: lazy(() => import('../../view/Admin/Garage')),
+      layout: 'VerticalLayout',
+    },
+
 ];
 
 

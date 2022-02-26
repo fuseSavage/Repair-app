@@ -1,13 +1,19 @@
 // import liff from "@line/liff";
 import React from "react";
 
-import { Form, Input, Button, Row, Col, Modal, Typography } from "antd";
+import { Form, Input, Button, Row, Col, Modal, Typography, Steps } from "antd";
 
-import { LoginOutlined } from "@ant-design/icons";
+import {
+  LoginOutlined,
+  SolutionOutlined,
+  LoadingOutlined,
+  SmileOutlined,
+} from "@ant-design/icons";
 
 import { sendLogin } from "../../services";
 
 const { Title } = Typography;
+const { Step } = Steps;
 
 function App() {
   const onFinish = (values) => {
@@ -18,7 +24,35 @@ function App() {
     // console.log(data);
 
     sendLogin(data).then((response) => {
+      // console.log(response.code);
       if (response.code === 200) {
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 1000);
+      } else if (response.code === 205) {
+        Modal.info({
+          title: (
+            <Title level={4}>ร้านซ่อมของท่านกำลังรอการอนุมัติจากระบบ</Title>
+          ),
+          content: (
+            <Steps style={{ padding: "5%" }}>
+              <Step
+                status="finish"
+                title="ลงทะเบียน"
+                icon={<SolutionOutlined />}
+              />
+              <Step
+                status="process"
+                title="อยู่ระหว่างการตรวจสอบ"
+                icon={<LoadingOutlined />}
+              />
+              <Step status="wait" title="สำเร็จ" icon={<SmileOutlined />} />
+            </Steps>
+          ),
+          width: "900px",
+          // `ร้านซ่อมของท่านกำลังรอการอนุมัติจากระบบ`
+        });
+      } else if (response.code === 202) {
         setTimeout(() => {
           window.location.reload(false);
         }, 1000);

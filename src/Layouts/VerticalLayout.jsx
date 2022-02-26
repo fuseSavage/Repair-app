@@ -7,6 +7,7 @@ import { Layout } from "antd";
 import HeaderTap from "./Header/tabHeader";
 import MenuList from "./Menu/menulist";
 import MenuDashboard from "./Menu/menuDashboard";
+import MenuAdmin from "./Menu/menuAdmin";
 
 const { Content } = Layout;
 
@@ -22,16 +23,22 @@ export default function VerticalLayout(props) {
     setChechLocal(JSON.parse(localStorage.getItem("user")));
   }, []);
 
-  
-
   if (checkLocal === null) {
     history.push("/");
   } else {
-    history.push({
-      pathname: "/dashboard",
-      state: checkLocal.userData.userId,
-    });
-    // console.log('test', checkLocal)
+    if (checkLocal.userData.userId === "admin") {
+      history.push({
+        pathname: "/admin/dashboard",
+        state: checkLocal.userData.userId,
+      });
+    } else {
+      history.push({
+        pathname: "/dashboard",
+        state: checkLocal.userData.userId,
+      });
+    }
+
+    // console.log("test", checkLocal.userData.userId);
   }
 
   return (
@@ -47,9 +54,7 @@ export default function VerticalLayout(props) {
       />
 
       {checkLocal === null ? (
-        <Layout
-          style={{ minHeight: "90vh", maxHeight: "90vh" }}
-        >
+        <Layout style={{ minHeight: "90vh", maxHeight: "90vh" }}>
           <MenuList />
 
           <Layout className="site-layout">
@@ -67,28 +72,59 @@ export default function VerticalLayout(props) {
           </Layout>
         </Layout>
       ) : (
-        <Layout
-          style={{
-            minHeight: "90vh",
-            maxHeight: "90vh",
-            // paddingTop: "0.5vh",
-          }}
-        >
-          <MenuDashboard />
-          <Layout className="site-layout">
-            <Content style={{ margin: "1vh 1vh" }}>
-              <div
-                className="site-layout-background"
-                style={{ mixHeight: 360, overflowY: "scroll" }}
+        <>
+          {checkLocal.userData.userId === "admin" ? (
+            <>
+              <Layout
+                style={{
+                  minHeight: "90vh",
+                  maxHeight: "90vh",
+                  // paddingTop: "0.5vh",
+                }}
               >
-                {children}
-              </div>
-            </Content>
-            {/* <Footer className="footer">
+                <MenuAdmin />
+                <Layout className="site-layout">
+                  <Content style={{ margin: "1vh 1vh" }}>
+                    <div
+                      className="site-layout-background"
+                      style={{ mixHeight: 360, overflowY: "scroll" }}
+                    >
+                      {children}
+                    </div>
+                  </Content>
+                  {/* <Footer className="footer">
               <p>Final Project ©2021 Developed by Chaiwat Singkibut</p>
             </Footer> */}
-          </Layout>
-        </Layout>
+                </Layout>
+              </Layout>
+            </>
+          ) : (
+            <>
+              <Layout
+                style={{
+                  minHeight: "90vh",
+                  maxHeight: "90vh",
+                  // paddingTop: "0.5vh",
+                }}
+              >
+                <MenuDashboard />
+                <Layout className="site-layout">
+                  <Content style={{ margin: "1vh 1vh" }}>
+                    <div
+                      className="site-layout-background"
+                      style={{ mixHeight: 360, overflowY: "scroll" }}
+                    >
+                      {children}
+                    </div>
+                  </Content>
+                  {/* <Footer className="footer">
+              <p>Final Project ©2021 Developed by Chaiwat Singkibut</p>
+            </Footer> */}
+                </Layout>
+              </Layout>
+            </>
+          )}
+        </>
       )}
     </>
   );

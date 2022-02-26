@@ -12,20 +12,6 @@ import IconCar from "../../../../assets/icons/car.png";
 
 import { FetchGarageAll } from "../../../../services";
 
-// const [dataGet, SetDataGet] = useState([]);
-// let datas = []
-
-//   getGarageAll().then((response) => {
-//       console.log('response => ', response)
-//    for (var i in response.data) {
-//        console.log(response.data[i])
-//        datas.push(response.data[i])
-//    }
-
-//   });
-
-//   console.log('datas', JSON.stringify(datas) )
-// console.log('datas', datas)
 
 function Map() {
   const [selectPark, setSelectPark] = useState(null);
@@ -101,7 +87,7 @@ export default function App() {
       <WrappedMap
         googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKBdBAnDzrOkcfHq9InQFfYM7Inig-Zeg&v=3.exp&libraries=geometry,drawing,places"
         loadingElement={<div style={{ height: "100%" }} />}
-        containerElement={<div style={{ height: "400px" }} />}
+        containerElement={<div style={{ height: "600px" }} />}
         mapElement={<div style={{ height: "100%" }} />}
       />
     </>

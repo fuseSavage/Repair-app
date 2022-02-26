@@ -1,8 +1,11 @@
 import React from "react";
 
-import { Row, Col, Typography, Form, Input, Button, Select } from "antd";
+import { Row, Col, Typography, Form, Input, Button, Select, Modal } from "antd";
 
 import { CommentOutlined } from "@ant-design/icons";
+
+// Import services
+import { InsertReport } from "../../../services";
 
 const formItemLayout = {
   labelCol: {
@@ -47,10 +50,20 @@ const { Title } = Typography;
 /* eslint-enable no-template-curly-in-string */
 
 export default function App() {
-
- 
   const onFinish = (values) => {
-    console.log(values);
+    // console.log(values);
+    InsertReport(values).then((response) => {
+      // console.log(response)
+      Modal.info({
+        title: "เรียบร้อย",
+        content: `แจ้งปัญหาการใช้งานเรียบร้อยแล้ว`,
+        onOk: () => {
+          setTimeout(() => {
+            window.location.reload(false)
+          }, 1);
+        }
+      });
+    })
   };
 
   return (
@@ -75,7 +88,7 @@ export default function App() {
           lg={{ span: 16 }}
           className="display-flex-center"
         >
-          <Row >
+          <Row>
             <Col span={24}>
               <Title level={4}>แจ้งปัญหาการใช้งาน</Title>
             </Col>

@@ -106,15 +106,10 @@ export default function App() {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
-    // this.setState({
-    //   searchText: selectedKeys[0],
-    //   searchedColumn: dataIndex,
-    // });
   };
 
   const handleReset = (clearFilters) => {
     clearFilters();
-    // this.setState({ searchText: "" });
     setSearchText("");
   };
 
@@ -145,25 +140,24 @@ export default function App() {
         return (
           <>
             {record.device_type === "รถจักรยานยนต์" ||
-                  record.device_type === "รถยนต์" ? (
-                    <>
-                      <Space size="small">
-                        <Text style={{ fontWeight: "bold" }}>
-                          {record.car_number}
-                        </Text>
-                      </Space>
-                      {<br />}
-                      <Text>{record.car_province}</Text>
-                    </>
-                  ) : (
-                    <>
-                      <Text>{record.equipment}</Text>
-                    </>
-                  )}
+            record.device_type === "รถยนต์" ? (
+              <>
+                <Space size="small">
+                  <Text style={{ fontWeight: "bold" }}>
+                    {record.car_number}
+                  </Text>
+                </Space>
+                {<br />}
+                <Text>{record.car_province}</Text>
+              </>
+            ) : (
+              <>
+                <Text>{record.equipment}</Text>
+              </>
+            )}
           </>
         );
       },
-      
     },
     {
       title: "รายละเอียดการซ่อมเบื้องต้น",
@@ -178,9 +172,40 @@ export default function App() {
     },
     {
       title: "สถานะ",
-      dataIndex: "status",
+      // dataIndex: "status",
       key: "status",
       ...getColumnSearchProps("status"),
+      render: (record) => {
+        return (
+          <>
+            {record.status === "สำเร็จ" ? (
+              <>
+                <Text
+                  style={{
+                    color: "green",
+                    backgroundColor: "#b7eb8f",
+                    padding: "2px",
+                  }}
+                >
+                  {record.status}
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text
+                  style={{
+                    color: "red",
+                    backgroundColor: "#fff566",
+                    padding: "2px",
+                  }}
+                >
+                  {record.status}
+                </Text>
+              </>
+            )}
+          </>
+        );
+      },
     },
     {
       title: "เพิ่มเติม",
@@ -188,20 +213,20 @@ export default function App() {
       render: (record) => {
         return (
           <>
-           <Link
-                    to={{
-                      pathname: "/dashboard/all-repair/detail",
-                      state: {
-                        detailsID: record.detailsID,
-                        memberTel: record.member_tel,
-                      },
-                    }}
-                  >
-                    <Text style={{ color: "blue" }}>
-                      {/* <ToolOutlined style={{fontSize: "200%"}} /> */}
-                      จัดการงานซ่อม
-                    </Text>
-                  </Link>
+            <Link
+              to={{
+                pathname: "/dashboard/all-repair/detail",
+                state: {
+                  detailsID: record.detailsID,
+                  memberTel: record.member_tel,
+                },
+              }}
+            >
+              <Text style={{ color: "blue" }}>
+                {/* <ToolOutlined style={{fontSize: "200%"}} /> */}
+                จัดการงานซ่อม
+              </Text>
+            </Link>
           </>
         );
       },
@@ -223,6 +248,7 @@ export default function App() {
           bordered
           columns={columns}
           dataSource={datas}
+          className="border"
         />
       </div>
     </>

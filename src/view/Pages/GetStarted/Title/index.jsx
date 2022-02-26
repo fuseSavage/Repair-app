@@ -25,7 +25,7 @@ function App() {
           backgroundColor: 0xffffff,
           color1: 0x55505f,
           color2: 0x60931,
-          birdSize: 0.7,
+          birdSize: 0.7
         })
       );
     }
