@@ -1,28 +1,24 @@
 import React, { useState, useEffect } from "react";
 
 import { Collapse, Col, Row, Typography, Divider } from "antd";
+
+import { RightCircleOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+
 // import services
 import { FetchGarageAll } from "../../services";
 
 const { Title, Text } = Typography;
 const { Panel } = Collapse;
 
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
-
 function Garage() {
   const [datas, setDatas] = useState([]);
 
   useEffect(() => {
-    const getGarage = async () => {
-      await FetchGarageAll().then(async (response) => {
-        if (response.code === 500) {
-          console.log("data", response);
-        } else {
-          await setDatas(response.data[0]);
+    const getGarage = () => {
+      FetchGarageAll().then((response) => {
+        if (response.data) {
+          setDatas(response.data);
           //  console.log('data', response.data)
         }
         // console.log('data', response)
@@ -31,9 +27,28 @@ function Garage() {
     getGarage();
   }, []);
 
-  function callback(key) {
-    console.log(key);
-  }
+  // function callback(key) {
+  //   // console.log(key);
+  // }
+
+  const genExtra = (id, data) => (
+    
+    <Link
+      to={{
+        pathname: "/admin/all-garage/detail",
+        state: {
+          garageID: id,
+          data: data,
+        },
+      }}
+    >
+      <RightCircleOutlined />
+    </Link>
+  );
+
+  // const detailGarage = (id) => {
+  //   console.log("id", id);
+  // };
 
   return (
     <>
@@ -43,64 +58,86 @@ function Garage() {
         </Col>
 
         <Col span={24}>
-          <Collapse onChange={callback}>
-            <Panel header={datas.garage_name} key="1" extra={datas.province}>
-              <Row gutter={[0, 16]}>
-                <Divider orientation="left" plain>
-                  รายละเอียดร้านซ่อม
-                </Divider>
-                <Col
-                  xs={24}
-                  md={{ span: 11, offset: 1 }}
-                  lg={{ span: 7, offset: 1 }}
-                >
-                  <Text style={{ fontWeight: "bold" }}>User ID : </Text>
-                  <Text>{datas.garageID} </Text>
-                </Col>
+          <Collapse>
+            {datas.length !== 0 ? (
+              <>
+                {datas.map((val, index) => {
+                  return (
+                    <>
+                      <Panel
+                        header={val.garage_name}
+                        key={index}
+                        extra={genExtra(val.garageID, val)}
+                      >
+                        <Row gutter={[0, 16]} className="text-left">
+                          <Divider orientation="left" plain>
+                            รายละเอียดร้านซ่อม
+                          </Divider>
 
-                <Col
-                  xs={24}
-                  md={{ span: 11, offset: 1 }}
-                  lg={{ span: 7, offset: 1 }}
-                >
-                  <Text style={{ fontWeight: "bold" }}>ชื่อร้าน : </Text>
-                  <Text>{datas.garage_name} </Text>
-                </Col>
+                          <Col xs={24} lg={{ span: 7, offset: 1 }}>
+                            <Text style={{ fontWeight: "bold" }}>
+                              ชื่อร้าน :{" "}
+                            </Text>
+                            <Text>{val.garage_name} </Text>
+                          </Col>
 
-                <Col
-                  xs={24}
-                  md={{ span: 11, offset: 1 }}
-                  lg={{ span: 7, offset: 1 }}
-                >
-                  <Text style={{ fontWeight: "bold" }}>ชื่อ-สกุล : </Text>
-                  <Text>{datas.user_name} </Text>
-                </Col>
+                          <Col xs={24} lg={{ span: 7, offset: 1 }}>
+                            <Text style={{ fontWeight: "bold" }}>
+                              ชื่อ-สกุล :{" "}
+                            </Text>
+                            <Text>{val.user_name} </Text>
+                          </Col>
 
-                <Col
-                  xs={24}
-                  md={{ span: 11, offset: 1 }}
-                  lg={{ span: 7, offset: 1 }}
-                >
-                  <Text style={{ fontWeight: "bold" }}>E-Mail : </Text>
-                  <Text>{datas.email} </Text>
-                </Col>
+                          <Col xs={24} lg={{ span: 7, offset: 1 }}>
+                            <Text style={{ fontWeight: "bold" }}>
+                              E-Mail :{" "}
+                            </Text>
+                            <Text>{val.email} </Text>
+                          </Col>
 
-                <Col
-                  xs={24}
-                  md={{ span: 11, offset: 1 }}
-                  lg={{ span: 7, offset: 1 }}
-                >
-                  <Text style={{ fontWeight: "bold" }}>ประเภทร้านซ่อม : </Text>
-                  <Text>{datas.garage_type} </Text>
-                </Col>
-              </Row>
-            </Panel>
-            <Panel header="This is panel header 2" key="2">
-              <p>{text}</p>
-            </Panel>
-            <Panel header="This is panel header 3" key="3">
-              <p>{text}</p>
-            </Panel>
+                          <Col xs={24} lg={{ span: 7, offset: 1 }}>
+                            <Text style={{ fontWeight: "bold" }}>
+                              ประเภทร้านซ่อม :{" "}
+                            </Text>
+                            <Text>
+                              {JSON.parse(val.garage_type).join(",  ")}{" "}
+                            </Text>
+                          </Col>
+
+                          <Col xs={24} lg={{ span: 7, offset: 1 }}>
+                            <Text style={{ fontWeight: "bold" }}>
+                              เวลาเปิด - ปิด :{" "}
+                            </Text>
+                            <Text>
+                              {val.on_time} - {val.off_time}{" "}
+                            </Text>
+                          </Col>
+
+                          <Col xs={24} lg={{ span: 7, offset: 1 }}>
+                            <Text style={{ fontWeight: "bold" }}>
+                              เบอร์โทรศัพท์ :{" "}
+                            </Text>
+                            <Text>{val.tel} </Text>
+                          </Col>
+
+                          <Col xs={24} lg={{ span: 15, offset: 1 }}>
+                            <Text style={{ fontWeight: "bold" }}>
+                              ที่อยู่ :{" "}
+                            </Text>
+                            <Text>
+                              {val.address_number} หมู่ {val.moo} ซอย{" "}
+                              {val.alley} ถนน {val.road} ต.{val.sub_district} อ.
+                              {val.district} จ.{val.province} {val.pos_code}{" "}
+                            </Text>
+                          </Col>
+                        </Row>
+                        <Divider />
+                      </Panel>
+                    </>
+                  );
+                })}
+              </>
+            ) : null}
           </Collapse>
         </Col>
       </Row>

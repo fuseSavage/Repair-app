@@ -70,7 +70,7 @@ function Map() {
             <h4>
               <b>{selectPark.garage_name}</b>
             </h4>
-            <p>{JSON.parse(selectPark.garage_type)}</p>
+            <p>{JSON.parse(selectPark.garage_type).join(",  ")}</p>
             <p>เปิด {selectPark.on_time} - {selectPark.off_time}</p>
           </div>
         </InfoWindow>

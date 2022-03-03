@@ -12,9 +12,6 @@ function Admin() {
 
     const [datas, setDatas] = useState([]);
 
-    
-      
-
     useEffect(() => {
         const getGarage = async () => {
           await FetchGarageAll().then(async (response) => {

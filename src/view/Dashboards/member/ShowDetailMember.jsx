@@ -8,7 +8,6 @@ import { useLocation } from "react-router-dom";
 // import Service
 import { FetctDetailByGarageID, FetchSpareByDetailID } from "../../../services";
 
-// import { useLocation } from "react-router-dom";
 
 const { Text, Title } = Typography;
 const { Column, ColumnGroup } = Table;

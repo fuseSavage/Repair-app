@@ -1,4 +1,4 @@
-import { Col } from 'antd'
+import { Col,   } from 'antd'
 import {
     withScriptjs,
     withGoogleMap,
@@ -11,7 +11,7 @@ import {
   const onMarkerDragEnd = (event) => {
     newLatLng[0].lat = event.latLng.lat()
     newLatLng[0].lng = event.latLng.lng()
-    console.log('newLat', newLatLng[0].lat, 'newLng', newLatLng[0].lng)
+    // console.log('newLat', newLatLng[0].lat, 'newLng', newLatLng[0].lng)
   }
 
   const MapWithAMarker = withScriptjs(
