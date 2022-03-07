@@ -1,41 +1,47 @@
 import React, { useState, useEffect } from "react";
-
-import { Table, Input, Button, Space, Row, Col, Typography, Avatar, Image } from "antd";
 import Highlighter from "react-highlight-words";
+
+import { Col, Row, Typography, Button, Table, Input, Space } from "antd";
+
 import { SearchOutlined } from "@ant-design/icons";
 
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-// import Service
-import { FetchMemberAll } from "../../../services";
+// import services
+import { FetchGarage } from "../../../services";
 
-const { Title, Text } = Typography
+const { Title, Text } = Typography;
 
-export default function Member() {
+function Approve() {
+  const [datas, setDatas] = useState([]);
+
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
 
-  const [datas, setDatas] = useState([]);
-
-  // let userId = JSON.parse(localStorage.getItem("user")).userData.userId;
-
   useEffect(() => {
-    // let data = {
-    //   userId: userId,
-    // };
-    const getMember = async () => {
-      await FetchMemberAll().then(async (response) => {
+    const getGarage = async () => {
+      await FetchGarage().then((response) => {
         if (response.code === 500) {
           console.log("data", response);
         } else {
-          await setDatas(response.data);
+          // console.log("data", response);
+          setDatas(response.data);
         }
-        // console.log('data', response)
       });
     };
-    getMember();
+    getGarage();
   }, []);
 
+  let non_approve = [];
+  if (datas !== null) {
+    datas.forEach((e) => {
+      if (e.confirmation === "non-approved") {
+        non_approve.push(e);
+      }
+    });
+  }
+
+  // console.log("non-approve", non_approve);
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -123,60 +129,86 @@ export default function Member() {
 
   const columns = [
     {
-      title: "Line",
-      width: "30%",
-      render: (record) => {
-        return (
-          <>
-            <Avatar
-              src={<Image src={record.imageUrl} style={{ width: 32 }} />}
-            /> {" "}
-            <Text strong>{record.userName}</Text> {<br />}
-          </>
-        );
+      title: "ลำดับ",
+      width: "5%",
+      render: (value, item, index) => {
+        return <>{index+1}</>;
       },
     },
-    {
-      title: "หมายเลขสมาชิก",
-      dataIndex: "member_tel",
-      key: "member_tel",
-      width: "20%",
-      ...getColumnSearchProps("member_tel"),
-    },
-    {
-      title: "ชื่อ",
-      dataIndex: "member_name",
-      key: "member_name",
-      width: "30%",
-      ...getColumnSearchProps("member_name"),
-    },
-    
     {
       title: "วันที่ลงทะเบียน",
       dataIndex: "registration_date",
       key: "registration_date",
-      width: "20%",
+      width: "10%",
       ...getColumnSearchProps("registration_date"),
     },
-   
-    
+    {
+      title: "ชื่อร้าน",
+      dataIndex: "garage_name",
+      key: "garage_name",
+      width: "20%",
+    },
+    {
+      title: "ประเภทร้านซ่อม",
+      // dataIndex: "member_name",
+      key: "garage_type",
+      width: "35%",
+      render: (record) => {
+        return <>{JSON.parse(record.garage_type).join(",  ")} </>;
+      },
+    },
+
+    {
+      title: "การอนุมัติ",
+      width: "10%",
+      render: () => {
+        return <><Text>ยังไม่อนุมัติ</Text></>;
+      },
+    },
+
+    {
+      title: "เพิ่มเติม",
+      key: "garageID",
+      width: "15%",
+      render: (record) => {
+        return (
+          <>
+            <Link
+              to={{
+                pathname: "/admin/approve/detail",
+                state: {
+                  data: record,
+                },
+              }}
+            >
+              <Text style={{ color: "blue" }}>
+                {/* <ToolOutlined style={{fontSize: "200%"}} /> */}
+                ดูรายละเอียดเพิ่มเติม
+              </Text>
+            </Link>
+          </>
+        );
+      },
+    },
   ];
 
   return (
     <>
-    <Row style={{padding: "3% 0 0 0"}}>
-      <Col span={24}>
-        <Title level={3}>ลูกค้าทั้งหมดของระบบ</Title>
-      </Col>
-    </Row>
+      <Row style={{ padding: "3% 0 0 0" }}>
+        <Col span={24}>
+          <Title level={3}>อนุมัติร้านซ่อม</Title>
+        </Col>
+      </Row>
       <div className="div-p-5">
         <Table
           scroll={{ x: 500 }}
           bordered
           columns={columns}
-          dataSource={datas}
+          dataSource={non_approve}
         />
       </div>
     </>
   );
 }
+
+export default Approve;

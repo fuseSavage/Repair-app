@@ -18,15 +18,17 @@ export default function ShowDetail() {
 
   //use State
 
-  const detailID = location.state;
-  const memberTel = location.state;
-    // console.log(detailID, memberTel.memberTel);
+  const detailID = location.state.detailsID;
+  const memberTel = location.state.memberTel;
+  const sandStatus = location.state.sandStatus;
+  const sandPayment = location.state.sandPayment;
+    console.log('test', sandStatus, sandPayment);
 
   return (
     <>
-      <TitleShowDetail detailID={detailID.detailsID} />
+      <TitleShowDetail detailID={detailID} />
       {/* Show Repair id = {detailID.detailsID} */}
-      <SpareAdd detailID={detailID.detailsID} memberTel={memberTel.memberTel} />
+      <SpareAdd detailID={detailID} memberTel={memberTel} sandStatus={sandStatus} sandPayment={sandPayment} />
     </>
   );
 }

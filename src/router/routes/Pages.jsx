@@ -141,9 +141,37 @@ const PagesRoutes = [
      // Admin Approve
      {
       path: '/admin/approve',
-      component: lazy(() => import('../../view/Admin/Approve')),
+      component: lazy(() => import('../../view/Admin/ApproveSetting/Approve')),
       layout: 'VerticalLayout',
     },
+
+       // Admin Approve Garage Detail
+       {
+        path: '/admin/approve/detail',
+        component: lazy(() => import('../../view/Admin/ApproveSetting/DetailApprove')),
+        layout: 'VerticalLayout',
+      },
+
+     // Admin Member Setting
+     {
+      path: '/admin/all-member',
+      component: lazy(() => import('../../view/Admin/MemberSetting/Member')),
+      layout: 'VerticalLayout',
+    },
+
+     // Admin Member History
+     {
+      path: '/admin/all-member/repair-history',
+      component: lazy(() => import('../../view/Admin/MemberSetting/HistoryRepair')),
+      layout: 'VerticalLayout',
+    },
+
+      // Admin Reported
+      {
+        path: '/admin/reported',
+        component: lazy(() => import('../../view/Admin/Reported')),
+        layout: 'VerticalLayout',
+      },
 
 ];
 

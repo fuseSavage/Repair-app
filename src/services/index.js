@@ -22,7 +22,7 @@ export const sendLogin = (data) => {
         localStorage.setItem("user", JSON.stringify(response.data));
       } else if (response.data.code === 202) {
         localStorage.setItem("user", JSON.stringify(response.data));
-      } 
+      }
       return response.data;
     })
     .catch((err) => {
@@ -45,7 +45,7 @@ export const FetchGarageAll = () => {
     });
 };
 
-// get list garage All 
+// get list garage All
 export const FetchGarage = () => {
   return axios
     .get(process.env.REACT_APP_SECRET_API + "/garage/all-repair")
@@ -134,7 +134,17 @@ export const InsertSpare = (data) => {
     });
 };
 
-// get data FetctDetailByGarageID
+// get data FetctDetailAll Spare
+export const FetchAllSpare = () => {
+  return axios
+    .get(process.env.REACT_APP_SECRET_API + "/repairdetail/getallspare")
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// get data FetctSpairByDetailID
 export const FetchSpareByDetailID = (data) => {
   return axios
 
@@ -164,6 +174,16 @@ export const UpdateDetail = (data) => {
   console.log(data);
   return axios
     .put(process.env.REACT_APP_SECRET_API + "/repairdetail/update-detail", data)
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const ApproveGarage = (data) => {
+  console.log(data);
+  return axios
+    .put(process.env.REACT_APP_SECRET_API + "/garage/approve", data)
     .then((response) => response.data)
     .catch((err) => {
       console.log(err);
@@ -210,7 +230,6 @@ export const InsertReport = (data) => {
     });
 };
 
-
 // get  All Member
 export const FetchMemberAll = () => {
   return axios
@@ -221,6 +240,15 @@ export const FetchMemberAll = () => {
     });
 };
 
+// get  All Report
+export const FetchReportAll = () => {
+  return axios
+    .get(process.env.REACT_APP_SECRET_API + "/report/all")
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 // // logout
 // export const sendLogout = () => {

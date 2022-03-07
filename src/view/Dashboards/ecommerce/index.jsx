@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 // Import services
 import {
   FetctDetailByGarage,
-  FetctMemberByGarage,
+  // FetctMemberByGarage,
   FetchMemberAll,
 } from "../../../services";
 
@@ -24,7 +24,7 @@ export default function Ecommerce() {
   // let location = useLocation();
 
   const [datas, setDatas] = useState([]);
-  const [member, setMember] = useState([]);
+  // const [member, setMember] = useState([]);
   const [allMember, setAllMember] = useState([]);
 
   // const  detailID  = location.state
@@ -42,20 +42,20 @@ export default function Ecommerce() {
       });
     };
 
-    let data = {
-      userId: JSON.parse(localStorage.getItem("user")).userData.userId,
-    };
+    // let data = {
+    //   userId: JSON.parse(localStorage.getItem("user")).userData.userId,
+    // };
 
-    const getMember = async () => {
-      await FetctMemberByGarage(data).then(async (response) => {
-        if (response.code === 500) {
-          console.log("data", response);
-        } else {
-          await setMember(response.data);
-        }
-        // console.log('data', response.data)
-      });
-    };
+    // const getMember = async () => {
+    //   await FetctMemberByGarage(data).then(async (response) => {
+    //     if (response.code === 500) {
+    //       console.log("data", response);
+    //     } else {
+    //       await setMember(response.data);
+    //     }
+    //     // console.log('data', response.data)
+    //   });
+    // };
 
     const getMemberAll = async () => {
       await FetchMemberAll().then(async (response) => {
@@ -66,12 +66,10 @@ export default function Ecommerce() {
     };
 
     getDetailByGarage();
-    getMember();
     getMemberAll();
   }, []);
 
   let sumPrice = 0;
-  let listMember = [];
   let listAllMember = [];
 
   if (datas !== null) {
@@ -80,12 +78,12 @@ export default function Ecommerce() {
     }
   }
 
-  if (member !== null) {
-    for (let i = 0; i < member.length; i++) {
-      // console.log(member)
-      listMember.push(member[i]);
-    }
-  }
+  // if (member !== null) {
+  //   for (let i = 0; i < member.length; i++) {
+  //     // console.log(member)
+  //     listMember.push(member[i]);
+  //   }
+  // }
 
   if (allMember !== null) {
     for (let i = 0; i < allMember.length; i++) {
@@ -124,28 +122,29 @@ export default function Ecommerce() {
           <Divider />
 
           <Row>
-            <Col span={12}>
+            {/* <Col span={12}>
               <Row gutter={16}>
                 <Col xs={24} lg={{ span: 11 }}>
                   <Statistic title="ปฏิทิน" value={dateNow} />
                 </Col>
-                <Col xs={24} lg={{ span: 11, offset: 1 }}>
-                  <Statistic
-                    title="ลูกค้าทั้งหมดของระบบ"
-                    value={listAllMember.length}
-                  />
-                </Col>
+               
               </Row>
-            </Col>
+            </Col> */}
 
-            <Col span={12}>
+            <Col span={24}>
               <Row gutter={16}>
-                <Col xs={24} lg={{ span: 11 }}>
+                <Col xs={24} lg={{ span: 8 }}>
+                  <Statistic title="ปฏิทิน" value={dateNow} />
+                </Col>
+                <Col xs={24} lg={{ span: 8 }}>
                   <Link to={"/dashboard/member"}>
-                    <Statistic title="ลูกค้าของฉัน" value={listMember.length} />
+                    <Statistic
+                      title="ลูกค้าทั้งหมดของระบบ"
+                      value={listAllMember.length}
+                    />
                   </Link>
                 </Col>
-                <Col xs={24} lg={{ span: 11, offset: 1 }}>
+                <Col xs={24} lg={{ span: 7, offset: 1 }}>
                   <Statistic
                     title="รายได้ทั้งหมดของร้าน (บาท)"
                     value={sumPrice}

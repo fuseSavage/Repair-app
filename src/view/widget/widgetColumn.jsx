@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Bar } from "@ant-design/plots";
+import { Col, Row, Typography } from "antd";
 
-import { CanvasJSChart } from "canvasjs-react-charts";
-
-// Import services
+// // Import services
 import { FetctDetailByGarage } from "../../services";
 
-export default function Ecommerce(props) {
+const { Title } = Typography;
+
+export default function DemoBar() {
   const [datas, setDatas] = useState([]);
 
   useEffect(() => {
@@ -22,69 +24,56 @@ export default function Ecommerce(props) {
     getDetailByGarage();
   }, []);
 
-  // console.log("datas", datas.length);
-
-  let carlist = [];
-  let motolist = [];
-  let agirculturelist = [];
-  let repairSum = []
-  let succeed = []
-  let notSucceed = []
+  let repairSum = [];
+  let succeed = [];
+  let notSucceed = [];
 
   if (datas !== null) {
     for (let i = 0; i < datas.length; i++) {
-      if (datas[i].device_type === "รถยนต์") {
-        // console.log(datas[i].device_type);
-        carlist.push(datas[i].device_type);
-      }
-      if (datas[i].device_type === "รถจักรยานยนต์") {
-        motolist.push(datas[i].device_type);
-      }
-      if (datas[i].device_type === "อุปกรณ์การเกษตร") {
-        agirculturelist.push(datas[i].device_type);
-      }
       // console.log(datas[i].status)
-      repairSum.push(datas[i].length)
-  
+      repairSum.push(datas[i].length);
+
       if (datas[i].status === "อยู่ระหว่างการซ่อม") {
-        succeed.push(datas[i].status)
+        notSucceed.push(datas[i].status);
         // console.log(datas[i].status)
       }
       if (datas[i].status === "สำเร็จ") {
-        notSucceed.push(datas[i].status)
+        succeed.push(datas[i].status);
       }
     }
   }
-  
 
-  const options = {
-    animationEnabled: true,
-    theme: "light2", // "light1", "dark1", "dark2"
-    title: {
-      text: "สรุปการซ่อม",
+  const data = [
+    {
+      type: "การซ่อมทั้งหมด",
+      value: repairSum.length,
     },
-    data: [
-      {
-        // Change type to "bar", "area", "spline", "pie",etc.
-        type: "column", 
-        // indexLabel: "{label}: {y}%",
-        startAngle: 90,
-        dataPoints: [
-          { y: repairSum.length, label: "การซ่อมทั้งหมด" },
-          { y: notSucceed.length, label: "สำเร็จ" },
-          { y: succeed.length, label: "กำลังดำเนินการซ่อม" },
-          
-        ],
-      },
-    ],
+    {
+      type: "สำเร็จ",
+      value: succeed.length,
+    },
+    {
+      type: "กำลังซ่อม",
+      value: notSucceed.length,
+    },
+  ];
+  const config = {
+    data,
+    xField: "value",
+    yField: "type",
+    seriesField: "type",
+    legend: {
+      position: "top-right",
+    },
   };
-
   return (
     <>
-      <CanvasJSChart
-        options={options}
-        /* onRef={ref => this.chart = ref} */
-      />
+      <Row>
+        <Col span={24}>
+          <Title level={4}>สรุปการซ่อม</Title>
+        </Col>
+      </Row>
+      <Bar {...config} />
     </>
   );
 }

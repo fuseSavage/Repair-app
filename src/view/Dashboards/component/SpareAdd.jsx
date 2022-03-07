@@ -36,15 +36,15 @@ const { confirm } = Modal;
 const { Option } = Select;
 
 export default function SpareAdd(props) {
-  const {detailID, memberTel} = props;
-  // console.log(memberTel, detailID)
+  const { detailID, memberTel, sandStatus, sandPayment } = props;
+  // console.log(sandPayment, sandStatus)
 
   // Set State
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [datas, setDatas] = useState([]);
-  const [status, setStatus] = useState('อยู่ระหว่างการซ่อม');
-  const [payment, setPayment] = useState('ยังไม่ได้ชำระ');
+  const [status, setStatus] = useState(sandStatus);
+  const [payment, setPayment] = useState(sandPayment);
 
   // state spare
   const [spareName, setSpareName] = useState();
@@ -55,8 +55,8 @@ export default function SpareAdd(props) {
   useEffect(() => {
     const getSpare = async () => {
       let data = {
-        detailID: detailID
-      }
+        detailID: detailID,
+      };
       await FetchSpareByDetailID(data).then((response) => {
         if (response.data) {
           setDatas(response.data);
@@ -64,6 +64,7 @@ export default function SpareAdd(props) {
       });
       setSumPrice(qty * qtyPrice);
     };
+   
     getSpare();
   }, [detailID, qty, qtyPrice]);
 
@@ -156,19 +157,18 @@ export default function SpareAdd(props) {
   };
 
   const handleSave = () => {
-   
     let data = {
       status: status,
       status_payment: payment,
       sumPrice: sum,
-      detailsID: detailID
-    }
+      detailsID: detailID,
+    };
     // console.log('data', data)
-    UpdateDetail(data)
+    UpdateDetail(data);
     setTimeout(() => {
-      window.location.reload(false)
+      window.location.reload(false);
     }, 1);
-  }
+  };
 
   return (
     <>
@@ -299,7 +299,7 @@ export default function SpareAdd(props) {
             <Col xs={24} sm={24} md={24} lg={{ span: 11, offset: 1 }}>
               <Title level={5}>
                 <Text>
-                <SaveOutlined /> อัพเดตสถานะ
+                  <SaveOutlined /> อัพเดตสถานะ
                 </Text>
               </Title>
               <div className="border">
@@ -308,14 +308,14 @@ export default function SpareAdd(props) {
                     <Title level={5}>
                       <Text>สถานะการซ่อม</Text>
                     </Title>
+
                     <div className="div-select">
                       <Select
                         allowClear
                         style={{ width: "100%" }}
-                        defaultValue="อยู่ระหว่างการซ่อม"
+                        defaultValue={sandStatus}
                         onChange={(e) => {
                           setStatus(e);
-                          // console.log(e)
                         }}
                       >
                         <Option value="อยู่ระหว่างการซ่อม">
@@ -330,12 +330,12 @@ export default function SpareAdd(props) {
                     <Title level={5}>
                       <Text>การชำระเงิน</Text>
                     </Title>
+
                     <div className="div-select">
                       <Select
                         allowClear
                         style={{ width: "100%" }}
-                        defaultValue={{ value: 'ยังไม่ได้ชำระ' }}
-                        
+                        defaultValue={sandPayment}
                         onChange={(e) => {
                           setPayment(e);
                         }}

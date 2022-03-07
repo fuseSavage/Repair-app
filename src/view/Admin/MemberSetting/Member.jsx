@@ -4,7 +4,7 @@ import { Table, Input, Button, Space, Row, Col, Typography, Avatar, Image } from
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // import Service
 import { FetchMemberAll } from "../../../services";
@@ -124,7 +124,7 @@ export default function Member() {
   const columns = [
     {
       title: "Line",
-      width: "30%",
+      width: "20%",
       render: (record) => {
         return (
           <>
@@ -147,7 +147,7 @@ export default function Member() {
       title: "ชื่อ",
       dataIndex: "member_name",
       key: "member_name",
-      width: "30%",
+      width: "20%",
       ...getColumnSearchProps("member_name"),
     },
     
@@ -158,6 +158,31 @@ export default function Member() {
       width: "20%",
       ...getColumnSearchProps("registration_date"),
     },
+
+    {
+        title: "ประวัติการซ่อม",
+        key: "member_tel",
+        width: "20%",
+        render: (record) => {
+            return (
+              <>
+                <Link
+                  to={{
+                    pathname: "/admin/all-member/repair-history",
+                    state: {
+                      data: record,
+                    },
+                  }}
+                >
+                  <Text style={{ color: "blue" }}>
+                    {/* <ToolOutlined style={{fontSize: "200%"}} /> */}
+                    ดูประวัติการซ่อม
+                  </Text>
+                </Link>
+              </>
+            );
+          },
+      },
    
     
   ];
@@ -166,7 +191,7 @@ export default function Member() {
     <>
     <Row style={{padding: "3% 0 0 0"}}>
       <Col span={24}>
-        <Title level={3}>ลูกค้าทั้งหมดของระบบ</Title>
+        <Title level={3}>ลูกค้าทั้งหมด</Title>
       </Col>
     </Row>
       <div className="div-p-5">

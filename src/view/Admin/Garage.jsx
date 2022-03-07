@@ -58,7 +58,7 @@ function Garage() {
         </Col>
 
         <Col span={24}>
-          <Collapse>
+          <Collapse defaultActiveKey={['0']}>
             {datas.length !== 0 ? (
               <>
                 {datas.map((val, index) => {

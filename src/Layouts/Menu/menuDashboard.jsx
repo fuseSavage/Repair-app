@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Col,  Layout, Menu, Row, Typography, Avatar } from "antd";
+import { Col, Layout, Menu, Row, Typography, Avatar } from "antd";
 import {
   HomeOutlined,
   AppstoreAddOutlined,
   ToolOutlined,
   OrderedListOutlined,
-  UserAddOutlined,
-  TeamOutlined,
+  // UserAddOutlined,
+  // TeamOutlined,
   FileSearchOutlined,
   CommentOutlined,
   // SettingOutlined,
@@ -49,7 +49,7 @@ export default function App() {
         }}
       >
         {/* <Divider /> */}
-       
+
         {/* <Divider /> */}
 
         <Sider
@@ -58,20 +58,24 @@ export default function App() {
           collapsed={collapsed}
           onCollapse={onCollapse}
         >
-           <Row className="display-flex-center">
-          <Col>
-            <Title level={5} style={{color: "#ffbf00"}}>
-              <Avatar
-                style={{ backgroundColor: "#ffbf00", verticalAlign: "middle" }}
-                size="large"
-                gap={"gap"}
-              >
+          <Row className="display-flex-center">
+            <Col>
+              <Title level={5} style={{ color: "#ffbf00" }}>
+                <Avatar
+                  style={{
+                    backgroundColor: "#ffbf00",
+                    verticalAlign: "middle",
+                  }}
+                  size="large"
+                  gap={"gap"}
+                >
+                  {garageName}
+                </Avatar>{" "}
+                &nbsp;
                 {garageName}
-              </Avatar> &nbsp;
-              {garageName}
-            </Title>
-          </Col>
-        </Row>
+              </Title>
+            </Col>
+          </Row>
           <Menu
             theme="dark"
             defaultSelectedKeys={["1"]}
@@ -89,23 +93,24 @@ export default function App() {
               <Menu.Item key="2" icon={<OrderedListOutlined />}>
                 <Link to={"/dashboard/all-repair"}>งานซ่อมทั้งหมด</Link>
               </Menu.Item>
+              <Menu.Item key="6" icon={<FileSearchOutlined />}>
+                <Link to={"/dashboard/search-repair"}>ค้นหาการซ่อม</Link>
+              </Menu.Item>
               {/* <Menu.Item key="4" icon={<ToolOutlined />}>
                 <Link to={"/dashboard/status"}>สถานะการซ่อม</Link>
               </Menu.Item> */}
             </SubMenu>
 
-            <SubMenu key="sub2" icon={<TeamOutlined />} title="จัดการลูกค้า">
+            {/* <SubMenu key="sub2" icon={<TeamOutlined />} title="จัดการลูกค้า">
               <Menu.Item key="5" icon={<UserAddOutlined />}>
                 <Link to={"/dashboard/add-member"}>ลงทะเบียนลูกค้า</Link>
               </Menu.Item>
-              <Menu.Item key="6" icon={<FileSearchOutlined />}>
-                <Link to={"/dashboard/search-repair"}>ค้นหาการซ่อม</Link>
-              </Menu.Item>
+
               <Menu.Item key="7" icon={<TeamOutlined />}>
                 <Link to={"/dashboard/member"}>ลูกค้าของฉัน</Link>
               </Menu.Item>
-            </SubMenu>
-{/* 
+            </SubMenu> */}
+            {/* 
             <Menu.Item key="10" icon={<DollarOutlined />}>
               <Link to={"/dashboard/payment"}>การชำระเงิน</Link>
             </Menu.Item> */}

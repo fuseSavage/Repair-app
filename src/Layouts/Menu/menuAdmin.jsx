@@ -7,6 +7,7 @@ import {
   ToolOutlined,
   TeamOutlined,
   // SettingOutlined,
+  CommentOutlined,
   LogoutOutlined,
   // DollarOutlined,
 } from "@ant-design/icons";
@@ -15,7 +16,7 @@ import {
 import { sendLogout, FetchGarage } from "../../services";
 
 const { Sider } = Layout;
-const { SubMenu } = Menu;
+// const { SubMenu } = Menu;
 const { Title } = Typography;
 
 export default function App() {
@@ -49,7 +50,7 @@ export default function App() {
     });
   }
 
-//   console.log("data", countNoti.length);
+  //   console.log("data", countNoti.length);
 
   const onCollapse = (collapsed) => {
     setCollapsed(collapsed);
@@ -106,17 +107,15 @@ export default function App() {
               <Link to={"/admin/dashboard"}>หน้าแรก</Link>
             </Menu.Item>
 
-            <SubMenu key="sub1" icon={<ToolOutlined />} title="สมาชิก">
-              <Menu.Item key="3" icon={<ToolOutlined />}>
-                <Link to={"/admin/all-garage"}>ร้านซ่อม</Link>
-              </Menu.Item>
+            <Menu.Item key="3" icon={<ToolOutlined />}>
+              <Link to={"/admin/all-garage"}>ร้านซ่อม</Link>
+            </Menu.Item>
 
-              <Menu.Item key="4" icon={<TeamOutlined />}>
-                <Link to={"/admin/all-member"}>ลูกค้าสมาชิก</Link>
-              </Menu.Item>
-            </SubMenu>
+            <Menu.Item key="4" icon={<TeamOutlined />}>
+              <Link to={"/admin/all-member"}>ลูกค้าสมาชิก</Link>
+            </Menu.Item>
 
-            <Menu.Item key="6" icon={<SolutionOutlined />}>
+            <Menu.Item key="5" icon={<SolutionOutlined />}>
               <Badge count={countNoti.length}>
                 <Link
                   to={"/admin/approve"}
@@ -125,6 +124,10 @@ export default function App() {
                   อนุมัติร้านซ่อม
                 </Link>
               </Badge>
+            </Menu.Item>
+
+            <Menu.Item key="6" icon={<CommentOutlined />}>
+              <Link to={"/admin/reported"}>การแจ้งปัญหา</Link>
             </Menu.Item>
 
             {/* 

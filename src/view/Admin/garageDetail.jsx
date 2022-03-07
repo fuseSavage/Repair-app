@@ -4,7 +4,6 @@ import {
   PageHeader,
   Button,
   Statistic,
-  Descriptions,
   Row,
   Col,
   Modal,
@@ -114,22 +113,19 @@ export default function GarageDetail() {
               </Button>,
             ]}
           >
-            <Row gutter={[0, 16]}>
-              <Col span={24}>
-                <Descriptions size="small" column={2}>
-                  <Descriptions.Item label="เจ้าของร้าน">
-                    คุณ {garage.user_name}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="ชื่อร้าน">
-                    {garage.garage_name}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="ประเภท">
-                    {JSON.parse(garage.garage_type).join(",  ")}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="เข้าร่วมระบบ">
-                    {garage.registration_date}
-                  </Descriptions.Item>
-                </Descriptions>
+            <Row className="text-left" gutter={[0, 16]}>
+           
+              <Col sx={24} sm={24} lg={{ span: 11, offset: 1 }}>
+                เจ้าของร้าน : คุณ {garage.user_name}
+              </Col>
+              <Col sx={24} sm={24} lg={{ span: 11, offset: 1 }}>
+                ชื่อร้าน : {garage.garage_name}
+              </Col>
+              <Col sx={24} sm={24} lg={{ span: 11, offset: 1 }}>
+                ประเภท : {JSON.parse(garage.garage_type).join(",  ")}
+              </Col>
+              <Col sx={24} sm={24} lg={{ span: 11, offset: 1 }}>
+                เข้าร่วมระบบ : {garage.registration_date}
               </Col>
 
               <Statistic

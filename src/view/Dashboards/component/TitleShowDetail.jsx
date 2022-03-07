@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Col, Divider, Row, Typography } from "antd";
+import { Col, Divider, Row, Typography, Avatar, Image } from "antd";
 import { MobileOutlined, DollarOutlined } from "@ant-design/icons";
 
 // import Service
@@ -77,6 +77,10 @@ export default function App(props) {
 
           <Col xs={24} md={{ span: 11, offset: 1 }} lg={{ span: 7, offset: 1 }}>
             <Text className="color-bfbf">ลูกค้า</Text>
+            <br /> <br />
+            <Avatar
+              src={<Image src={datas.imageUrl} style={{ width: 32 }} />}
+            />
             <Title level={4} className="color-fff">
               <Text className="color-fff">คุณ {datas.member_name}</Text>
             </Title>

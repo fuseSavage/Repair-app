@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Highlighter from "react-highlight-words";
 
-import { Table, Space, Typography, Row, Col, Input, Button } from "antd";
+import {
+  Table,
+  Space,
+  Typography,
+  Row,
+  Col,
+  Input,
+  Button,
+  Avatar,
+  Image,
+} from "antd";
 import { Link } from "react-router-dom";
 
 import { SearchOutlined } from "@ant-design/icons";
@@ -30,7 +40,7 @@ export default function App() {
     getDetailByGarage();
   }, []);
 
-  // console.log('datas' , datas)
+  console.log('datas' , datas)
 
   ///test
 
@@ -116,9 +126,28 @@ export default function App() {
   const columns = [
     {
       title: "ชื่อลูกค้า",
-      dataIndex: "member_name",
+      // dataIndex: "member_name",
       key: "member_name",
       ...getColumnSearchProps("member_name"),
+      render: (record) => {
+        return (
+          <>
+            <Row>
+              <Col>
+                <Avatar
+                  src={<Image src={record.imageUrl} style={{ width: 32 }} />}
+                />
+              </Col>
+              <Col offset={1}>
+                <Row>
+                  <Text strong>{record.userName}</Text>
+                </Row>
+                <Row>{record.member_name}</Row>
+              </Col>
+            </Row>
+          </>
+        );
+      },
     },
     {
       title: "รหัสลูกค้า",
@@ -219,6 +248,8 @@ export default function App() {
                 state: {
                   detailsID: record.detailsID,
                   memberTel: record.member_tel,
+                  sandStatus: record.status,
+                  sandPayment: record.status_payment
                 },
               }}
             >
