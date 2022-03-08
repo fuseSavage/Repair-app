@@ -196,7 +196,7 @@ export default function Member() {
     </Row>
       <div className="div-p-5">
         <Table
-          scroll={{ x: 500 }}
+          scroll={{ x: 400 }}
           bordered
           columns={columns}
           dataSource={datas}

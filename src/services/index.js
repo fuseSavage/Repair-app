@@ -250,6 +250,18 @@ export const FetchReportAll = () => {
     });
 };
 
+// Get Detail
+export const FetchDetailAll = () => {
+  return axios
+    .get(process.env.REACT_APP_SECRET_API + "/repairdetail/all")
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+
+
 // // logout
 // export const sendLogout = () => {
 //   return localStorage.removeItem("user");

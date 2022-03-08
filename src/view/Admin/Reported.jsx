@@ -4,7 +4,7 @@ import { Col, Row, Comment, List, Typography } from "antd";
 
 import { FetchReportAll } from "../../services";
 
-import { PhoneOutlined } from "@ant-design/icons";
+import { PhoneOutlined, UserOutlined, CarOutlined } from "@ant-design/icons";
 
 // import IconGarage from "../../assets/icons/garage.png";
 import IconMember from "../../assets/icons/profile.png";
@@ -30,7 +30,7 @@ function Reported() {
     <>
       <Row className="text-left div-p-5">
         <Col>
-          <Title level={3}>การแจ้งปัญหาการใช้งาน</Title>
+          <Title level={3}>ปัญหาการใช้งาน</Title>
         </Col>
 
         <Col style={{ padding: "2%" }} span={24}>
@@ -48,11 +48,11 @@ function Reported() {
                         <span key="comment-basic-reply-to">
                           {item.party === "garage" ? (
                             <>
-                              ร้านซ่อม, <PhoneOutlined /> {item.report_tel}
+                             <CarOutlined /> ร้านซ่อม, <PhoneOutlined /> {item.report_tel}
                             </>
                           ) : (
                             <>
-                              ลูกค้า, <PhoneOutlined /> {item.report_tel}
+                             <UserOutlined /> ลูกค้า, <PhoneOutlined /> {item.report_tel}
                             </>
                           )}
                         </span>,

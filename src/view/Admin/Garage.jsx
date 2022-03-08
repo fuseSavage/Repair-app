@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 
-import { Collapse, Col, Row, Typography, Divider } from "antd";
+import { Collapse, Col, Row, Typography, Divider, Avatar, Image } from "antd";
 
 import { RightCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 // import services
 import { FetchGarageAll } from "../../services";
+
+// import Image
+import GarageIcon from "../../assets/icons/garage.png";
 
 const { Title, Text } = Typography;
 const { Panel } = Collapse;
@@ -25,6 +28,7 @@ function Garage() {
       });
     };
     getGarage();
+
   }, []);
 
   // function callback(key) {
@@ -32,7 +36,6 @@ function Garage() {
   // }
 
   const genExtra = (id, data) => (
-    
     <Link
       to={{
         pathname: "/admin/all-garage/detail",
@@ -57,15 +60,29 @@ function Garage() {
           <Title level={3}> รายชื่อร้านซ่อมทั้งหมด </Title>
         </Col>
 
+        {/* defaultActiveKey={["0"]} */}
+
         <Col span={24}>
-          <Collapse defaultActiveKey={['0']}>
+          <Collapse >
             {datas.length !== 0 ? (
               <>
                 {datas.map((val, index) => {
                   return (
                     <>
                       <Panel
-                        header={val.garage_name}
+                        header={
+                          <>
+                            <Avatar
+                              src={
+                                <Image
+                                  src={GarageIcon}
+                                  style={{ width: 30, paddingRight: "3px" }}
+                                />
+                              }
+                            />
+                            {val.garage_name}
+                          </>
+                        }
                         key={index}
                         extra={genExtra(val.garageID, val)}
                       >
