@@ -46,7 +46,6 @@ const MapWithAMarker = withScriptjs(
 const { Option } = Select;
 const { Title } = Typography;
 
-
 //Main Function
 export default function RegistrationForm() {
   const [ontime, setOnTime] = useState();
@@ -83,7 +82,7 @@ export default function RegistrationForm() {
         if (response.code === 200) {
           Modal.info({
             title: "เรียบร้อยแล้ว",
-            content: `สมัครสมาชิกให้ลูกค้าเรียบร้อยแล้ว`,
+            content: `ได้รับข้อมูลของร้านท่านแล้ว ระบบจะทำการตรวจสอบข้อมูลของร้านและยืนการเข้าร่วมกับระบบ โดยจะแจ้งไปยังอีเมลล์ของท่านที่ได้ลงทะเบียนไว้`,
             onOk: () => {
               window.location.reload(false);
             },
@@ -558,7 +557,7 @@ export default function RegistrationForm() {
               </Row>
             </div>
             <Col span={24}>
-              <Form.Item >
+              <Form.Item>
                 <Button
                   className="bt-them"
                   htmlType="submit"
@@ -572,6 +571,5 @@ export default function RegistrationForm() {
         </Col>
       </Row>
     </>
-   
   );
 }

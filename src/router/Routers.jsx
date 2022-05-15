@@ -17,7 +17,7 @@ import FullLayout from "../Layouts/FullLayout";
 
 // Components
 
-import ProtectedRoute from "../ProtectdRoute";
+import   from "../ProtectdRoute";
 
 export default function Routers() {
 

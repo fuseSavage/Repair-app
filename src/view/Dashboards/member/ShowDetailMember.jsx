@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Col, Row, Typography, Table, Divider } from "antd";
+import { Col, Row, Typography, Table, Divider, Avatar, Image } from "antd";
 import { MobileOutlined } from "@ant-design/icons";
 
 import { useLocation } from "react-router-dom";
@@ -110,6 +110,10 @@ export default function App() {
 
           <Col xs={24} md={{ span: 11, offset: 1 }} lg={{ span: 7, offset: 1 }}>
             <Text className="color-bfbf">ลูกค้า</Text>
+            <br /> <br />
+            <Avatar
+              src={<Image src={datas.imageUrl} style={{ width: 32 }} />}
+            />
             <Title level={4} className="color-fff">
               <Text className="color-fff">คุณ {datas.member_name}</Text>
             </Title>

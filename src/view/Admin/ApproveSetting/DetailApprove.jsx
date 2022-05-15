@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import emailjs from "@emailjs/browser";
 
 import { useLocation } from "react-router-dom";
 
@@ -12,8 +13,7 @@ import {
   Marker,
 } from "react-google-maps";
 
-import {  ApproveGarage } from "../../../services";
-
+import { ApproveGarage } from "../../../services";
 
 import IconCar from "../../../assets/icons/car.png";
 
@@ -21,6 +21,8 @@ function DetailApprove() {
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const form = useRef();
 
   let location = useLocation;
   const data = location().state.data;
@@ -50,22 +52,25 @@ function DetailApprove() {
 
   const showModal = () => {
     setVisible2(true);
-    
   };
   //   console.log("data", data);
 
   const handleOk = (id) => {
     let data = {
-        garageID: id
-    }
-    ApproveGarage(data)
+      garageID: id,
+    };
+
+    sendEmail();
+    // console.log('email', sendEmail())
+
+    ApproveGarage(data);
     // console.log("id", id);
     setConfirmLoading(true);
     setTimeout(() => {
       setVisible2(false);
       setConfirmLoading(false);
 
-      window.location.reload(false)
+      window.location.reload(false);
     }, 2000);
   };
 
@@ -74,9 +79,48 @@ function DetailApprove() {
     setVisible2(false);
   };
 
+  const sendEmail = () => {
+    // e.preventDefault();
+
+    emailjs
+      .sendForm(
+        "service_fvdfink",
+        "template_f4fea9i",
+        form.current,
+        "RxwNfn5jn6WDcuzBK"
+      )
+      // console.log(form.current)
+      .then(
+        (result) => {
+          console.log(result.text);
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
+  };
+
+  console.log("data => ", data);
+
+  // function FormEmail() {
+  //   return (
+  //     <>
+  //       <form ref={form} onSubmit={sendEmail}>
+  //         <label>Name</label>
+  //         <input value="chaiwat 555" type="text" name="user_name" />
+  //         <label>Email</label>
+  //         <input type="email" name="user_email" />
+  //         <label>Message</label>
+  //         <textarea name="message" />
+  //         <input type="submit" value="Send" />
+  //       </form>
+  //     </>
+  //   );
+  // }
+
   return (
     <>
-      <Row className="div-p-5">
+      <Row className="div-p-5" ref={form}>
         <Col span={24} className="pageHeader" style={{ padding: "2%" }}>
           <PageHeader
             className="site-page-header"
@@ -118,10 +162,7 @@ function DetailApprove() {
               </Col>
             </Row>
             <Col style={{ padding: "3% 0 0 0" }} span={24}>
-              <Button
-                className="bt-them"
-                onClick={showModal}
-              >
+              <Button className="bt-them" onClick={showModal}>
                 อนุมัติ
               </Button>
             </Col>
@@ -154,8 +195,23 @@ function DetailApprove() {
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        <p>ยืนยันที่จะให้ร้าน {data.garage_name} เข้าร่วมกับระบบจัดการร้านซ่อม</p>
+        <p>
+          ยืนยันที่จะให้ร้าน {data.garage_name} เข้าร่วมกับระบบจัดการร้านซ่อม
+        </p>
       </Modal>
+
+      {/* Send Email To Email Garage */}
+      <div>
+        <form hidden ref={form} onSubmit={sendEmail}>
+          <input value={data.user_name} type="text" name="user_name" />
+          <input value={data.garage_name} type="text" name="garage_name" />
+          <input value={data.registration_date} type="text" name="regis_date" />
+          <input value={data.email} type="email" name="user_email" />
+          <label>Message</label>
+          <textarea name="message" />
+          <input type="submit" value="Send" />
+        </form>
+      </div>
     </>
   );
 }

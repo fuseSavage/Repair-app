@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { Col, Row, Card, Typography } from "antd";
+import { Col, Row, Card, Typography, Avatar, Image } from "antd";
 
 // import Service
 import { FetchDetailByMember } from "../../../services";
+
+import IconGarage from '../../../assets/icons/garage.png'
 
 const { Text } = Typography;
 
@@ -31,7 +33,7 @@ export default function ContentSearch(props) {
     getDetailByMember();
   }, [tel]);
 
-//   console.log("datas", datas, "tel", tel);
+  console.log("datas", datas, "tel", tel);
 
   return (
     <>
@@ -48,7 +50,9 @@ export default function ContentSearch(props) {
                 >
                   <Card
                     type="inner"
-                    title={val.garage_name + " " + val.repair_date}
+                    title={<> <Avatar
+                      src={<Image src={IconGarage} style={{ width: 32 }} />}
+                    /> {val.garage_name}    {val.repair_date}</>}
                     extra={
                       <Link
                         to={{
